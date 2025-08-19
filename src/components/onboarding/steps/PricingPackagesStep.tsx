@@ -127,17 +127,24 @@ export default function PricingPackagesStep({
     return Object.keys(newErrors).length === 0
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (validateForm()) {
-      onComplete({
-        packages,
+      // Convert to unified format
+      const unifiedData = {
+        packages: packages.map(pkg => ({
+          ...pkg,
+          priceCents: Math.round(pkg.price * 100), // Convert to cents for database
+          type: 'package' as const
+        })),
         pricingModel,
-        hourlyRate,
+        hourlyRate: pricingModel === 'hourly' ? hourlyRate : 0,
         depositRequired,
         depositPercentage,
         cancellationPolicy
-      })
+      }
+
+      onComplete(unifiedData)
       onNext()
     }
   }

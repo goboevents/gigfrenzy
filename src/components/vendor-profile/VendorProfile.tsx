@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { 
   UserIcon, 
   MapPinIcon, 
@@ -18,6 +18,22 @@ import ServiceAreasSection from './sections/ServiceAreasSection'
 import OffersSection from './sections/OffersSection'
 import ReviewsSection from './sections/ReviewsSection'
 
+interface VendorService {
+  id: string
+  title: string
+  description: string
+  priceCents: number
+  type: string
+  duration: string
+  features: string[]
+  isPopular: boolean
+  pricingModel: string
+  hourlyRate: number
+  depositRequired: boolean
+  depositPercentage: number
+  cancellationPolicy: string
+}
+
 interface Vendor {
   id: string
   slug: string
@@ -31,12 +47,7 @@ interface Vendor {
   coverImageUrl: string
   rating: number
   reviewCount: number
-  services: Array<{
-    id: string
-    title: string
-    description: string
-    priceCents: number
-  }>
+  services: VendorService[]
   serviceAreas: Array<{
     id: string
     city: string
@@ -73,13 +84,37 @@ const tabs = [
 
 export default function VendorProfile({ vendor }: VendorProfileProps) {
   const [activeTab, setActiveTab] = useState('about')
+  const [services, setServices] = useState<VendorService[]>(vendor.services || [])
+  const [isLoadingServices, setIsLoadingServices] = useState(false)
+
+  // Fetch services from the API if not provided
+  useEffect(() => {
+    if (!vendor.services || vendor.services.length === 0) {
+      fetchServices()
+    }
+  }, [vendor.slug])
+
+  const fetchServices = async () => {
+    setIsLoadingServices(true)
+    try {
+      const response = await fetch(`/api/vendor/public/${vendor.slug}/services`)
+      if (response.ok) {
+        const data = await response.json()
+        setServices(data.services || [])
+      }
+    } catch (error) {
+      console.error('Error fetching vendor services:', error)
+    } finally {
+      setIsLoadingServices(false)
+    }
+  }
 
   const renderTabContent = () => {
     switch (activeTab) {
       case 'about':
         return <AboutSection vendor={vendor} />
       case 'services':
-        return <ServicesSection services={vendor.services} />
+        return <ServicesSection services={services} />
       case 'areas':
         return <ServiceAreasSection serviceAreas={vendor.serviceAreas} />
       case 'offers':
@@ -191,7 +226,14 @@ export default function VendorProfile({ vendor }: VendorProfileProps) {
 
         {/* Tab Content */}
         <div className="min-h-96">
-          {renderTabContent()}
+          {isLoadingServices && activeTab === 'services' ? (
+            <div className="flex items-center justify-center py-12">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+              <span className="ml-2 text-gray-600">Loading services...</span>
+            </div>
+          ) : (
+            renderTabContent()
+          )}
         </div>
       </div>
     </div>

@@ -16,7 +16,7 @@ import BookingManagement from './BookingManagement'
 import Analytics from './Analytics'
 import Settings from './Settings'
 
-type DashboardTab = 'profile' | 'packages' | 'bookings' | 'analytics' | 'settings'
+type DashboardTab = 'profile' | 'services' | 'bookings' | 'analytics' | 'settings'
 
 interface VendorDashboardProps {
   title?: string
@@ -25,13 +25,13 @@ interface VendorDashboardProps {
 
 export default function VendorDashboard({
   title = 'Vendor Dashboard',
-  subtitle = 'Manage your business profile, packages, and bookings'
+  subtitle = 'Manage your business profile, services, and bookings'
 }: VendorDashboardProps) {
   const [activeTab, setActiveTab] = useState<DashboardTab>('profile')
 
   const tabs = [
     { id: 'profile', name: 'Profile', icon: UserIcon, component: ProfileManagement },
-    { id: 'packages', name: 'Packages & Pricing', icon: CubeIcon, component: PackageManagement },
+    { id: 'services', name: 'Services & Packages', icon: CubeIcon, component: PackageManagement },
     { id: 'bookings', name: 'Bookings', icon: CalendarIcon, component: BookingManagement },
     { id: 'analytics', name: 'Analytics', icon: ChartBarIcon, component: Analytics },
     { id: 'settings', name: 'Settings', icon: CogIcon, component: Settings }
@@ -106,7 +106,7 @@ Builder.registerComponent(VendorDashboard, {
     {
       name: 'subtitle',
       type: 'string',
-      defaultValue: 'Manage your business profile, packages, and bookings'
+      defaultValue: 'Manage your business profile, services, and bookings'
     }
   ],
   image: 'https://tabler-icons.io/static/tabler-icons/icons-png/dashboard.png',

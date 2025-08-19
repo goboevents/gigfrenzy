@@ -1,33 +1,52 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { vendorCreateInputSchema } from '@/lib/schema'
-import { createVendor } from '@/lib/repositories/vendorRepository'
-import { requireAuthUser } from '@/lib/auth'
-import { getDatabase } from '@/lib/db'
+import { requireAuthUser, getVendorIdForUser } from '@/lib/auth'
+import { saveOnboardingStep, getAllOnboardingData, getOnboardingStep } from '@/lib/repositories/vendorOnboardingRepository'
 
 export const runtime = 'nodejs'
 
-export async function POST(request: NextRequest) {
+export async function GET(request: NextRequest) {
   try {
     const auth = await requireAuthUser()
-    const body = await request.json()
-    const parsed = vendorCreateInputSchema.safeParse(body)
-    if (!parsed.success) {
-      return NextResponse.json({ error: 'Invalid input', issues: parsed.error.flatten() }, { status: 400 })
+    const vendorId = getVendorIdForUser(auth.userId)
+    if (!vendorId) return NextResponse.json({ error: 'No vendor linked' }, { status: 404 })
+    
+    const { searchParams } = new URL(request.url)
+    const step = searchParams.get('step')
+    
+    if (step) {
+      const stepData = getOnboardingStep(vendorId, step)
+      return NextResponse.json({ stepData })
+    } else {
+      const onboardingData = getAllOnboardingData(vendorId)
+      return NextResponse.json({ onboardingData })
     }
-
-    // Create vendor record
-    const vendor = createVendor(parsed.data)
-
-    // Link user to vendor (one-to-one)
-    const db = getDatabase()
-    db.prepare('INSERT OR REPLACE INTO vendor_user_vendors (userId, vendorId) VALUES (?, ?)').run(auth.userId, vendor.id)
-
-    return NextResponse.json({ vendorId: vendor.id }, { status: 201 })
   } catch (e) {
     if ((e as Error).message === 'UNAUTHORIZED') {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
-    console.error('Onboarding error', e)
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+  }
+}
+
+export async function POST(request: NextRequest) {
+  try {
+    const auth = await requireAuthUser()
+    const vendorId = getVendorIdForUser(auth.userId)
+    if (!vendorId) return NextResponse.json({ error: 'No vendor linked' }, { status: 404 })
+    
+    const body = await request.json()
+    const { step, data } = body
+    
+    if (!step || !data) {
+      return NextResponse.json({ error: 'Step and data are required' }, { status: 400 })
+    }
+    
+    const record = saveOnboardingStep(vendorId, step, data)
+    return NextResponse.json({ success: true, record })
+  } catch (e) {
+    if ((e as Error).message === 'UNAUTHORIZED') {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
