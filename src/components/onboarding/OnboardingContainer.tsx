@@ -1,7 +1,7 @@
 'use client'
 
 import { Builder } from '@builder.io/react'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline'
 
 interface OnboardingStep {
@@ -21,6 +21,7 @@ interface OnboardingContainerProps {
   backgroundColor?: string
   textColor?: string
   accentColor?: string
+  vendorId?: number
 }
 
 export default function OnboardingContainer({
@@ -31,13 +32,70 @@ export default function OnboardingContainer({
   allowStepNavigation = true,
   backgroundColor = '#ffffff',
   textColor = '#1f2937',
-  accentColor = '#3b82f6'
+  accentColor = '#3b82f6',
+  vendorId
 }: OnboardingContainerProps) {
   const [currentStep, setCurrentStep] = useState(0)
   const [onboardingData, setOnboardingData] = useState({})
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
-  const handleStepComplete = (stepId: string, data: any) => {
+  // Load existing onboarding data if vendorId is provided
+  useEffect(() => {
+    if (vendorId) {
+      loadOnboardingData()
+    }
+  }, [vendorId])
+
+  const loadOnboardingData = async () => {
+    try {
+      const response = await fetch(`/api/vendor/onboarding?vendorId=${vendorId}`)
+      if (response.ok) {
+        const data = await response.json()
+        setOnboardingData(data.onboardingData || {})
+        
+        // Mark completed steps
+        const updatedSteps = steps.map(step => ({
+          ...step,
+          isComplete: !!data.onboardingData[step.id]
+        }))
+        // Update steps state if needed
+      }
+    } catch (error) {
+      console.error('Error loading onboarding data:', error)
+    }
+  }
+
+  const saveOnboardingStep = async (stepId: string, data: any) => {
+    if (!vendorId) return
+    
+    try {
+      const response = await fetch('/api/vendor/onboarding', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          vendorId,
+          step: stepId,
+          data
+        }),
+      })
+      
+      if (!response.ok) {
+        console.error('Failed to save onboarding step')
+      }
+    } catch (error) {
+      console.error('Error saving onboarding step:', error)
+    }
+  }
+
+  const handleStepComplete = async (stepId: string, data: any) => {
     setOnboardingData(prev => ({ ...prev, [stepId]: data }))
+    
+    // Save to database
+    if (vendorId) {
+      await saveOnboardingStep(stepId, data)
+    }
     
     // Mark step as complete
     const updatedSteps = steps.map(step => 
@@ -221,6 +279,11 @@ Builder.registerComponent(OnboardingContainer, {
       name: 'accentColor',
       type: 'color',
       defaultValue: '#3b82f6'
+    },
+    {
+      name: 'vendorId',
+      type: 'number',
+      defaultValue: 0
     }
   ],
   image: 'https://tabler-icons.io/static/tabler-icons/icons-png/layout-list.png',

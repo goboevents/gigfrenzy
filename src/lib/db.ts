@@ -61,6 +61,63 @@ function initializeDatabase(filePath: string): Database.Database {
       updatedAt TEXT NOT NULL,
       FOREIGN KEY(vendorId) REFERENCES vendors(id) ON DELETE CASCADE
     );
+    CREATE TABLE IF NOT EXISTS vendor_services (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      vendorId INTEGER NOT NULL,
+      title TEXT NOT NULL,
+      description TEXT DEFAULT '',
+      priceCents INTEGER NOT NULL DEFAULT 0,
+      isActive INTEGER NOT NULL DEFAULT 1,
+      type TEXT NOT NULL DEFAULT 'service',
+      duration TEXT DEFAULT 'per event',
+      features TEXT DEFAULT '[]',
+      isPopular INTEGER NOT NULL DEFAULT 0,
+      pricingModel TEXT DEFAULT 'fixed',
+      hourlyRate INTEGER DEFAULT 0,
+      depositRequired INTEGER NOT NULL DEFAULT 0,
+      depositPercentage INTEGER DEFAULT 25,
+      cancellationPolicy TEXT DEFAULT '',
+      createdAt TEXT NOT NULL,
+      updatedAt TEXT NOT NULL,
+      FOREIGN KEY(vendorId) REFERENCES vendors(id) ON DELETE CASCADE
+    );
+    CREATE TABLE IF NOT EXISTS vendor_service_areas (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      vendorId INTEGER NOT NULL,
+      city TEXT NOT NULL,
+      state TEXT NOT NULL,
+      zipCode TEXT NOT NULL,
+      radius INTEGER DEFAULT 25,
+      createdAt TEXT NOT NULL,
+      FOREIGN KEY(vendorId) REFERENCES vendors(id) ON DELETE CASCADE
+    );
+    CREATE TABLE IF NOT EXISTS vendor_availability (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      vendorId INTEGER NOT NULL UNIQUE,
+      monday INTEGER NOT NULL DEFAULT 0,
+      tuesday INTEGER NOT NULL DEFAULT 0,
+      wednesday INTEGER NOT NULL DEFAULT 0,
+      thursday INTEGER NOT NULL DEFAULT 0,
+      friday INTEGER NOT NULL DEFAULT 0,
+      saturday INTEGER NOT NULL DEFAULT 0,
+      sunday INTEGER NOT NULL DEFAULT 0,
+      startTime TEXT DEFAULT '09:00',
+      endTime TEXT DEFAULT '17:00',
+      createdAt TEXT NOT NULL,
+      updatedAt TEXT NOT NULL,
+      FOREIGN KEY(vendorId) REFERENCES vendors(id) ON DELETE CASCADE
+    );
+    CREATE TABLE IF NOT EXISTS vendor_onboarding (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      vendorId INTEGER NOT NULL UNIQUE,
+      step TEXT NOT NULL,
+      data TEXT NOT NULL,
+      isComplete INTEGER NOT NULL DEFAULT 0,
+      createdAt TEXT NOT NULL,
+      updatedAt TEXT NOT NULL,
+      FOREIGN KEY(vendorId) REFERENCES vendors(id) ON DELETE CASCADE
+    );
+    -- Legacy tables for backward compatibility
     CREATE TABLE IF NOT EXISTS services (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       vendorId INTEGER NOT NULL,
