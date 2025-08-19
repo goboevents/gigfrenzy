@@ -96,7 +96,7 @@ export default function VendorSignupForm({
         const errorData = await response.json()
         setError(errorData.error || 'Something went wrong. Please try again.')
       }
-    } catch (err) {
+    } catch {
       setError('Network error. Please check your connection and try again.')
     } finally {
       setIsSubmitting(false)
