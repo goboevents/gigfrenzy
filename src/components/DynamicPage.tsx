@@ -1,5 +1,10 @@
 'use client'
 
+import { builder } from '@builder.io/sdk'
+import { BUILDER_API_KEY, BUILDER_MODEL } from '../../builder-config'
+import BuilderPage from './BuilderPage'
+import { useEffect, useState } from 'react'
+
 interface DynamicPageProps {
   params: {
     page: string[]
@@ -7,9 +12,47 @@ interface DynamicPageProps {
 }
 
 export default function DynamicPage({ params }: DynamicPageProps) {
+  const [content, setContent] = useState<any>(null)
+  const [loading, setLoading] = useState(true)
   const urlPath = '/' + (params.page || []).join('/')
 
-  // Show a default page for now
+  useEffect(() => {
+    const fetchContent = async () => {
+      try {
+        // Try to get content from Builder.io
+        const builderContent = await builder.get(BUILDER_MODEL, {
+          apiKey: BUILDER_API_KEY,
+          userAttributes: {
+            urlPath: urlPath
+          }
+        }).promise()
+
+        if (builderContent) {
+          setContent(builderContent)
+        }
+      } catch (error) {
+        console.log('No Builder.io content found for path:', urlPath)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchContent()
+  }, [urlPath])
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-lg">Loading...</div>
+      </div>
+    )
+  }
+
+  if (content) {
+    return <BuilderPage content={content} model={BUILDER_MODEL} />
+  }
+
+  // If no content is found, show a default page
   return (
     <div className="min-h-screen flex items-center justify-center">
       <div className="text-center">

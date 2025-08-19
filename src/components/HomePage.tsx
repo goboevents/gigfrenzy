@@ -1,6 +1,50 @@
 'use client'
 
+import { builder } from '@builder.io/sdk'
+import { BUILDER_API_KEY, BUILDER_MODEL } from '../../builder-config'
+import BuilderPage from './BuilderPage'
+import { useEffect, useState } from 'react'
+
 export default function HomePage() {
+  const [content, setContent] = useState<any>(null)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const fetchContent = async () => {
+      try {
+        // Try to get content from Builder.io for the home page
+        const builderContent = await builder.get(BUILDER_MODEL, {
+          apiKey: BUILDER_API_KEY,
+          userAttributes: {
+            urlPath: '/'
+          }
+        }).promise()
+
+        if (builderContent) {
+          setContent(builderContent)
+        }
+      } catch (error) {
+        console.log('No Builder.io content found, showing default page')
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchContent()
+  }, [])
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-lg">Loading...</div>
+      </div>
+    )
+  }
+
+  if (content) {
+    return <BuilderPage content={content} model={BUILDER_MODEL} />
+  }
+
   // Default home page content
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">

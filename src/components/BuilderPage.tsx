@@ -1,13 +1,8 @@
 'use client'
 
-import { Builder, BuilderComponent } from '@builder.io/react'
+import { BuilderComponent } from '@builder.io/react'
 import { useEffect, useState } from 'react'
-import { BUILDER_API_KEY, BUILDER_MODEL } from '../../builder-config'
-
-// Initialize Builder.io only on client side
-if (typeof window !== 'undefined') {
-  Builder.init(BUILDER_API_KEY)
-}
+import { BUILDER_MODEL } from '../../builder-config'
 
 interface BuilderPageProps {
   content?: any
@@ -26,25 +21,8 @@ export default function BuilderPage({ content, model = BUILDER_MODEL }: BuilderP
       return
     }
 
-    // Fetch content from Builder.io if no content is provided
-    const fetchContent = async () => {
-      try {
-        const content = await Builder.get(model, {
-          userAttributes: {
-            urlPath: window.location.pathname
-          }
-        }).promise()
-        
-        setBuilderContent(content)
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to load content')
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    fetchContent()
-  }, [content, model])
+    setLoading(false)
+  }, [content])
 
   if (loading) {
     return (
