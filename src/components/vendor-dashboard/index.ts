@@ -1,0 +1,6 @@
+export { default as VendorDashboard } from './VendorDashboard'
+export { default as ProfileManagement } from './ProfileManagement'
+export { default as PackageManagement } from './PackageManagement'
+export { default as BookingManagement } from './BookingManagement'
+export { default as Analytics } from './Analytics'
+export { default as Settings } from './Settings'
