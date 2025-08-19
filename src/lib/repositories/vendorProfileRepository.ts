@@ -44,7 +44,7 @@ export function getVendorProfileByVendorId(vendorId: number): VendorProfileRecor
 
 export function getVendorProfileBySlug(slug: string): VendorProfileRecord | null {
   const db = getDatabase()
-  const row = db.prepare('SELECT * FROM vendor_profiles WHERE slug = ? AND visibility = "public"').get(slug) as VendorProfileRecord | undefined
+  const row = db.prepare('SELECT * FROM vendor_profiles WHERE slug = ? AND visibility = ?').get(slug, 'public') as VendorProfileRecord | undefined
   return row ?? null
 }
 

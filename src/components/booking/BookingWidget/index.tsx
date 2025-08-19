@@ -49,7 +49,7 @@ export default function BookingWidget({
       setLoading(true)
       
       // Load services and pricing
-      const response = await fetch(`/api/vendor/public/${vendorSlug}/booking-options`)
+      const response = await fetch(`/api/vendor/public/${vendorSlug}?type=booking-options`)
       if (response.ok) {
         const data = await response.json()
         setServices([...data.services, ...data.packages])

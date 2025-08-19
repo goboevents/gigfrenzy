@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { 
   ChevronLeftIcon, 
   ChevronRightIcon,
@@ -51,24 +51,15 @@ export default function ServiceSelectionStep({
   const [selectedServiceId, setSelectedServiceId] = useState<number | null>(
     data.serviceId || data.packageId || null
   )
-  const [activeTab, setActiveTab] = useState<'services' | 'packages'>('services')
+  const [activeTab, setActiveTab] = useState<'services' | 'packages'>('packages')
   const [searchTerm, setSearchTerm] = useState('')
 
-  useEffect(() => {
-    if (!vendorData) {
-      loadBookingOptions()
-    } else {
-      setServices(vendorData.services || [])
-      setPackages(vendorData.packages || [])
-    }
-  }, [vendorSlug, vendorData])
-
-  const loadBookingOptions = async () => {
+  const loadBookingOptions = useCallback(async () => {
     try {
       setLoading(true)
       setError(null)
       
-      const response = await fetch(`/api/vendor/public/${vendorSlug}/booking-options`)
+      const response = await fetch(`/api/vendor/public/${vendorSlug}?type=booking-options`)
       if (!response.ok) {
         throw new Error('Failed to load booking options')
       }
@@ -82,7 +73,16 @@ export default function ServiceSelectionStep({
     } finally {
       setLoading(false)
     }
-  }
+  }, [vendorSlug])
+
+  useEffect(() => {
+    if (!vendorData) {
+      loadBookingOptions()
+    } else {
+      setServices(vendorData.services || [])
+      setPackages(vendorData.packages || [])
+    }
+  }, [vendorSlug, vendorData, loadBookingOptions])
 
   const getCurrentItems = () => {
     const items = activeTab === 'services' ? services : packages

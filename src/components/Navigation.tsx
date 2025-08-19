@@ -3,12 +3,15 @@
 import { Builder } from '@builder.io/react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { useState, useEffect } from 'react'
 import { 
   HomeIcon,
   UserGroupIcon,
   CalendarIcon,
   ChartBarIcon,
-  CogIcon
+  CogIcon,
+  UserIcon,
+  ArrowRightOnRectangleIcon
 } from '@heroicons/react/24/outline'
 
 interface NavigationProps {
@@ -17,11 +20,49 @@ interface NavigationProps {
 
 export default function Navigation({ title = 'GigFrenzy' }: NavigationProps) {
   const pathname = usePathname()
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [userName, setUserName] = useState('')
+
+  useEffect(() => {
+    // Check if user is authenticated by looking for auth token
+    const checkAuth = async () => {
+      try {
+        const response = await fetch('/api/auth/me')
+        if (response.ok) {
+          const userData = await response.json()
+          setIsAuthenticated(true)
+          setUserName(userData.name || 'Vendor')
+        } else {
+          setIsAuthenticated(false)
+          setUserName('')
+        }
+      } catch (error) {
+        setIsAuthenticated(false)
+        setUserName('')
+      }
+    }
+
+    checkAuth()
+  }, [])
+
+  const handleLogout = async () => {
+    try {
+      await fetch('/api/auth/logout', { method: 'POST' })
+      setIsAuthenticated(false)
+      setUserName('')
+      window.location.href = '/'
+    } catch (error) {
+      console.error('Logout failed:', error)
+    }
+  }
 
   const navigation = [
     { name: 'Home', href: '/', icon: HomeIcon },
-    { name: 'Vendor Onboarding', href: '/vendor-onboarding', icon: UserGroupIcon },
-    { name: 'Vendor Dashboard', href: '/vendor-dashboard', icon: ChartBarIcon },
+    ...(isAuthenticated ? [
+      { name: 'Dashboard', href: '/vendor-dashboard', icon: ChartBarIcon },
+    ] : [
+      { name: 'Vendor Onboarding', href: '/vendor-onboarding', icon: UserGroupIcon },
+    ])
   ]
 
   return (
@@ -58,6 +99,37 @@ export default function Navigation({ title = 'GigFrenzy' }: NavigationProps) {
                 )
               })}
             </div>
+          </div>
+
+          <div className="flex items-center space-x-4">
+            {isAuthenticated ? (
+              <div className="flex items-center space-x-3">
+                <span className="text-sm text-gray-700">Welcome, {userName}</span>
+                <button
+                  onClick={handleLogout}
+                  className="inline-flex items-center px-3 py-2 rounded-md text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 transition-colors"
+                >
+                  <ArrowRightOnRectangleIcon className="h-4 w-4 mr-2" />
+                  Logout
+                </button>
+              </div>
+            ) : (
+              <div className="flex items-center space-x-3">
+                <Link
+                  href="/login"
+                  className="inline-flex items-center px-3 py-2 rounded-md text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 transition-colors"
+                >
+                  <UserIcon className="h-4 w-4 mr-2" />
+                  Sign In
+                </Link>
+                <Link
+                  href="/signup"
+                  className="inline-flex items-center px-4 py-2 rounded-md text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 transition-colors"
+                >
+                  Get Started
+                </Link>
+              </div>
+            )}
           </div>
 
           <div className="md:hidden">

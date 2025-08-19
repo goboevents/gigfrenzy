@@ -10,10 +10,10 @@ interface BookingPageProps {
 export default async function BookingPage({ params }: BookingPageProps) {
   const { vendorSlug } = await params
   
-  // Verify the vendor exists
+  // Verify the vendor exists and get booking data
   try {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/api/vendor/public/${vendorSlug}`,
+      `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/api/vendor/public/${vendorSlug}?type=booking-options`,
       { cache: 'no-store' }
     )
     

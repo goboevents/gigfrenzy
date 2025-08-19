@@ -39,6 +39,7 @@ export default function ProfileManagement() {
   const [isLoading, setIsLoading] = useState(true)
   const [isSaving, setIsSaving] = useState(false)
   const [editForm, setEditForm] = useState<VendorProfile>(profile)
+  const [showCopiedMessage, setShowCopiedMessage] = useState(false)
 
   useEffect(() => {
     fetchProfile()
@@ -123,6 +124,75 @@ export default function ProfileManagement() {
           </button>
         )}
       </div>
+
+      {/* Public Profile Link */}
+      {profile.slug ? (
+        <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="text-sm font-medium text-blue-900">Public Profile</h3>
+              <p className="text-sm text-blue-700 mt-1">
+                Customers can view your profile at this URL
+              </p>
+            </div>
+            <div className="flex items-center space-x-3">
+              <a
+                href={`/vendor/${profile.slug}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center px-3 py-2 border border-blue-300 text-sm font-medium rounded-md text-blue-700 bg-white hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+              >
+                <GlobeAltIcon className="h-4 w-4 mr-2" />
+                View Profile
+              </a>
+              <button
+                onClick={() => {
+                  navigator.clipboard.writeText(`${window.location.origin}/vendor/${profile.slug}`);
+                  setShowCopiedMessage(true);
+                  setTimeout(() => setShowCopiedMessage(false), 2000);
+                }}
+                className="inline-flex items-center px-3 py-2 border border-blue-300 text-sm font-medium rounded-md text-blue-700 bg-white hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                title="Copy profile URL"
+              >
+                {showCopiedMessage ? (
+                  <>
+                    <CheckIcon className="h-4 w-4 mr-2 text-green-600" />
+                    Copied!
+                  </>
+                ) : (
+                  <>
+                    <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                    </svg>
+                    Copy URL
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+          <div className="mt-3 p-2 bg-white rounded border border-blue-200">
+            <code className="text-sm text-blue-800 font-mono">
+              {window.location.origin}/vendor/{profile.slug}
+            </code>
+          </div>
+        </div>
+      ) : (
+        <div className="mb-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+          <div className="flex items-center">
+            <div className="flex-shrink-0">
+              <svg className="h-5 w-5 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+              </svg>
+            </div>
+            <div className="ml-3">
+              <h3 className="text-sm font-medium text-yellow-800">Profile Not Public Yet</h3>
+              <p className="text-sm text-yellow-700 mt-1">
+                Set up your profile slug to create a public-facing profile that customers can view and book from.
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Cover Image */}
       <div className="mb-8">
@@ -317,9 +387,22 @@ export default function ProfileManagement() {
                 placeholder="your-business-name"
               />
             ) : (
-              <p className="text-sm text-gray-600">
-                /vendor/{profile.slug || 'not-set'}
-              </p>
+              <div>
+                <p className="text-sm text-gray-600 mb-2">
+                  /vendor/{profile.slug || 'not-set'}
+                </p>
+                {profile.slug && (
+                  <a
+                    href={`/vendor/${profile.slug}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center text-xs text-blue-600 hover:text-blue-800 hover:underline"
+                  >
+                    <GlobeAltIcon className="h-3 w-3 mr-1" />
+                    Open in new tab
+                  </a>
+                )}
+              </div>
             )}
           </div>
         </div>

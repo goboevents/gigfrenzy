@@ -31,6 +31,8 @@ interface VendorService {
   depositRequired: boolean
   depositPercentage: number
   cancellationPolicy: string
+  createdAt?: string
+  updatedAt?: string
 }
 
 export default function PackageManagement() {
@@ -447,7 +449,7 @@ export default function PackageManagement() {
                   <p className="text-gray-600 mb-3">{svc.description || 'No description provided'}</p>
                   
                   {/* Features */}
-                  {svc.features && svc.features.length > 0 && (
+                  {svc.features && Array.isArray(svc.features) && svc.features.length > 0 && (
                     <div className="mb-3">
                       <div className="flex flex-wrap gap-2">
                         {svc.features.map((feature, index) => (

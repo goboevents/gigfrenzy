@@ -60,21 +60,24 @@ export default function BookingFlow({
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [bookingId, setBookingId] = useState<number | null>(null)
+  const [localVendorData, setLocalVendorData] = useState(vendorData)
 
   // Load vendor data if not provided
   useEffect(() => {
     if (!vendorData) {
       loadVendorData()
+    } else {
+      setLocalVendorData(vendorData)
     }
   }, [vendorSlug, vendorData])
 
   const loadVendorData = async () => {
     try {
       setLoading(true)
-      const response = await fetch(`/api/vendor/public/${vendorSlug}/booking-options`)
+      const response = await fetch(`/api/vendor/public/${vendorSlug}?type=booking-options`)
       if (!response.ok) throw new Error('Failed to load vendor data')
       const data = await response.json()
-      // Store vendor data for later use
+      setLocalVendorData(data)
     } catch (err) {
       setError('Failed to load vendor information')
       console.error('Error loading vendor data:', err)
@@ -165,7 +168,7 @@ export default function BookingFlow({
         return (
           <ServiceSelectionStep
             vendorSlug={vendorSlug}
-            vendorData={vendorData}
+            vendorData={localVendorData}
             data={bookingData}
             onUpdate={updateBookingData}
             onNext={handleNext}
@@ -194,7 +197,7 @@ export default function BookingFlow({
       case 5:
         return (
           <ReviewBookingStep
-            vendorData={vendorData}
+            vendorData={localVendorData}
             data={bookingData}
             onUpdate={updateBookingData}
             onSubmit={handleSubmitBooking}
@@ -207,7 +210,7 @@ export default function BookingFlow({
         return (
           <BookingConfirmation
             bookingId={bookingId}
-            vendorData={vendorData}
+            vendorData={localVendorData}
             bookingData={bookingData}
           />
         )

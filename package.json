@@ -6,7 +6,9 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "seed:dj": "tsx scripts/seed-dj-vendor.ts",
+    "seed:clean": "tsx scripts/cleanup-test-data.ts"
   },
   "dependencies": {
     "@builder.io/react": "^8.2.6",
@@ -31,6 +33,7 @@
     "eslint": "^9",
     "eslint-config-next": "15.4.7",
     "tailwindcss": "^4",
+    "tsx": "^4.19.2",
     "typescript": "^5"
   }
 }

@@ -37,3 +37,23 @@ export function findVendorUserByEmail(email: string): VendorUserRecord | null {
   return row ?? null
 }
 
+export function linkVendorToUser(vendorId: number, userId: number): boolean {
+  const db = getDatabase()
+  try {
+    const stmt = db.prepare(
+      `INSERT INTO vendor_user_vendors (userId, vendorId) VALUES (?, ?)`
+    )
+    const result = stmt.run(userId, vendorId)
+    return result.changes > 0
+  } catch (error) {
+    console.error('Error linking vendor to user:', error)
+    return false
+  }
+}
+
+export function getVendorUserById(id: number): VendorUserRecord | null {
+  const db = getDatabase()
+  const row = db.prepare('SELECT * FROM vendor_users WHERE id = ?').get(id) as VendorUserRecord | undefined
+  return row ?? null
+}
+
