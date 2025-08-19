@@ -4,8 +4,10 @@ import { Builder, BuilderComponent } from '@builder.io/react'
 import { useEffect, useState } from 'react'
 import { BUILDER_API_KEY, BUILDER_MODEL } from '../../builder-config'
 
-// Initialize Builder.io
-Builder.init(BUILDER_API_KEY)
+// Initialize Builder.io only on client side
+if (typeof window !== 'undefined') {
+  Builder.init(BUILDER_API_KEY)
+}
 
 interface BuilderPageProps {
   content?: any

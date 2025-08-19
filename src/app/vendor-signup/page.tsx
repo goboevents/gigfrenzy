@@ -1,12 +1,6 @@
 'use client'
 
 import { useState } from 'react'
-import { Builder } from '@builder.io/react'
-import { BUILDER_API_KEY, BUILDER_MODEL } from '../../../builder-config'
-import BuilderPage from '../../../components/BuilderPage'
-
-// Initialize Builder.io
-Builder.init(BUILDER_API_KEY)
 
 export default function VendorSignup() {
   const [formData, setFormData] = useState({
