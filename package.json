@@ -11,6 +11,7 @@
   "dependencies": {
     "@builder.io/react": "^8.2.6",
     "@builder.io/sdk": "^6.1.2",
+    "@heroicons/react": "^2.2.0",
     "bcryptjs": "^2.4.3",
     "better-sqlite3": "^11.5.0",
     "jose": "^5.9.6",
