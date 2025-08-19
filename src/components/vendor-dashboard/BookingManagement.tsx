@@ -16,19 +16,20 @@ import {
 
 interface Booking {
   id: number
-  eventDate: string
-  eventTime: string
-  eventType: string
-  location: string
   customerName: string
   customerEmail: string
-  customerPhone: string
-  packageId: number
-  packageTitle: string
-  totalAmount: number
-  status: 'pending' | 'confirmed' | 'completed' | 'cancelled'
-  notes: string
+  customerPhone: string | null
+  eventDate: string
+  startTime: string
+  eventType: string
+  guestCount: number | null
+  venueAddress: string | null
+  totalPriceCents: number
+  status: string
+  paymentStatus: string
   createdAt: string
+  notes?: string
+  packageTitle?: string
 }
 
 export default function BookingManagement() {
@@ -119,7 +120,12 @@ export default function BookingManagement() {
   }
 
   const formatTime = (timeString: string) => {
-    return timeString
+    if (!timeString) return ''
+    const [hour, minute] = timeString.split(':')
+    const hourNum = parseInt(hour)
+    const ampm = hourNum >= 12 ? 'PM' : 'AM'
+    const displayHour = hourNum === 0 ? 12 : hourNum > 12 ? hourNum - 12 : hourNum
+    return `${displayHour}:${minute} ${ampm}`
   }
 
   const formatPrice = (amount: number) => {
@@ -217,14 +223,14 @@ export default function BookingManagement() {
                     </div>
                     <div className="flex items-center space-x-2 text-sm text-gray-600">
                       <ClockIcon className="h-4 w-4" />
-                      <span>{formatTime(booking.eventTime)}</span>
+                      <span>{formatTime(booking.startTime)}</span>
                     </div>
                     <div className="flex items-center space-x-2 text-sm text-gray-600">
                       <MapPinIcon className="h-4 w-4" />
-                      <span>{booking.location}</span>
+                      <span>{booking.venueAddress || 'N/A'}</span>
                     </div>
                     <div className="flex items-center space-x-2 text-sm text-gray-600">
-                      <span className="font-medium">{formatPrice(booking.totalAmount)}</span>
+                      <span className="font-medium">{formatPrice(booking.totalPriceCents)}</span>
                     </div>
                   </div>
 
@@ -325,15 +331,15 @@ export default function BookingManagement() {
                   </div>
                   <div>
                     <span className="font-medium text-gray-700">Time:</span>
-                    <p>{formatTime(selectedBooking.eventTime)}</p>
+                    <p>{formatTime(selectedBooking.startTime)}</p>
                   </div>
                   <div>
                     <span className="font-medium text-gray-700">Location:</span>
-                    <p>{selectedBooking.location}</p>
+                    <p>{selectedBooking.venueAddress || 'N/A'}</p>
                   </div>
                   <div>
                     <span className="font-medium text-gray-700">Total:</span>
-                    <p>{formatPrice(selectedBooking.totalAmount)}</p>
+                    <p>{formatPrice(selectedBooking.totalPriceCents)}</p>
                   </div>
                 </div>
                 

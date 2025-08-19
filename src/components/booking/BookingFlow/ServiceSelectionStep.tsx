@@ -48,11 +48,13 @@ export default function ServiceSelectionStep({
   const [packages, setPackages] = useState<Service[]>([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [selectedServiceId, setSelectedServiceId] = useState<number | null>(
-    data.serviceId || data.packageId || null
-  )
+  const [selectedServiceId, setSelectedServiceId] = useState<number | null>(null)
   const [activeTab, setActiveTab] = useState<'services' | 'packages'>('packages')
   const [searchTerm, setSearchTerm] = useState('')
+
+
+
+
 
   const loadBookingOptions = useCallback(async () => {
     try {
@@ -84,6 +86,24 @@ export default function ServiceSelectionStep({
     }
   }, [vendorSlug, vendorData, loadBookingOptions])
 
+  // Initialize selectedServiceId and active tab when component mounts or when coming back from later steps
+  useEffect(() => {
+    if (services.length > 0 && packages.length > 0 && !selectedServiceId) {
+      const newSelectedId = data.serviceId || data.packageId ? Number(data.serviceId || data.packageId) : null
+      
+      if (newSelectedId) {
+        setSelectedServiceId(newSelectedId)
+        
+        // Set the correct active tab based on the selected service
+        const allItems = [...services, ...packages]
+        const selectedService = allItems.find(item => Number(item.id) === newSelectedId)
+        if (selectedService) {
+          setActiveTab(selectedService.type === 'package' ? 'packages' : 'services')
+        }
+      }
+    }
+  }, [services, packages, data.serviceId, data.packageId, selectedServiceId])
+
   const getCurrentItems = () => {
     const items = activeTab === 'services' ? services : packages
     if (!searchTerm) return items
@@ -95,27 +115,45 @@ export default function ServiceSelectionStep({
   }
 
   const getSelectedService = () => {
-    if (!selectedServiceId) return null
+    if (!selectedServiceId || services.length === 0 || packages.length === 0) return null
     
     const allItems = [...services, ...packages]
-    return allItems.find(item => item.id === selectedServiceId) || null
+    return allItems.find(item => Number(item.id) === selectedServiceId) || null
   }
 
-  const handleServiceSelect = (serviceId: number) => {
-    setSelectedServiceId(serviceId)
+  const handleServiceSelect = (serviceId: number | string) => {
+    const numericServiceId = Number(serviceId)
     
-    const selectedService = getSelectedService()
+    // Find the selected service directly from available items
+    const allItems = [...services, ...packages]
+    const selectedService = allItems.find(item => Number(item.id) === numericServiceId)
+    
     if (selectedService) {
       const isPackage = selectedService.type === 'package'
+      
+      // Calculate the correct total price based on pricing model
+      let totalPriceCents = selectedService.priceCents
+      
+      if (selectedService.pricingModel === 'hourly' && selectedService.hourlyRate && data.eventDuration) {
+        // For hourly services, calculate based on hourly rate and event duration
+        totalPriceCents = Math.round(selectedService.hourlyRate * data.eventDuration)
+      }
+      
+      // Calculate deposit amount based on the correct total price
       const depositAmount = selectedService.depositRequired 
-        ? Math.round(selectedService.priceCents * selectedService.depositPercentage / 100)
+        ? Math.round(totalPriceCents * selectedService.depositPercentage / 100)
         : 0
 
+      // Update the state and active tab
+      setSelectedServiceId(numericServiceId)
+      setActiveTab(isPackage ? 'packages' : 'services')
+
+      // Update the booking data
       onUpdate({
-        serviceId: isPackage ? undefined : serviceId,
-        packageId: isPackage ? serviceId : undefined,
+        serviceId: isPackage ? undefined : numericServiceId,
+        packageId: isPackage ? numericServiceId : undefined,
         selectedService,
-        totalPriceCents: selectedService.priceCents,
+        totalPriceCents,
         depositAmountCents: depositAmount,
       })
     }
@@ -225,7 +263,7 @@ export default function ServiceSelectionStep({
                   <ServiceCard
                     key={item.id}
                     service={item}
-                    isSelected={selectedServiceId === item.id}
+                    isSelected={selectedServiceId === Number(item.id)}
                     onSelect={handleServiceSelect}
                   />
                 ))
@@ -261,6 +299,7 @@ export default function ServiceSelectionStep({
                   guestCount={data.guestCount}
                   pricingModel={selectedService.pricingModel}
                   hourlyRate={selectedService.hourlyRate}
+                  eventDuration={data.eventDuration}
                 />
               ) : (
                 <div className="bg-gray-50 border border-gray-200 rounded-lg p-6 text-center">
@@ -268,6 +307,16 @@ export default function ServiceSelectionStep({
                   <p className="text-sm text-gray-400">
                     Choose from the {activeTab} on the left to get started
                   </p>
+                  {data.eventDuration && data.eventDuration > 0 && (
+                    <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                      <p className="text-sm text-blue-700">
+                        Your event duration: <span className="font-medium">{data.eventDuration} hour{data.eventDuration !== 1 ? 's' : ''}</span>
+                      </p>
+                      <p className="text-xs text-blue-600 mt-1">
+                        Pricing will be calculated based on this duration
+                      </p>
+                    </div>
+                  )}
                 </div>
               )}
             </div>

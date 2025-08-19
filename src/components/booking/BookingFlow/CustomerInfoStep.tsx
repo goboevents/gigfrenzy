@@ -18,11 +18,11 @@ interface CustomerInfoStepProps {
   onPrevious: () => void
 }
 
-export default function CustomerInfoStep({
-  data,
-  onUpdate,
-  onNext,
-  onPrevious
+export default function CustomerInfoStep({ 
+  data, 
+  onUpdate, 
+  onNext, 
+  onPrevious 
 }: CustomerInfoStepProps) {
   const [formData, setFormData] = useState({
     customerName: data.customerName || '',
@@ -33,6 +33,16 @@ export default function CustomerInfoStep({
   })
   
   const [errors, setErrors] = useState<Record<string, string>>({})
+
+  // Format time for display (12-hour AM/PM format)
+  const formatTimeForDisplay = (timeString: string) => {
+    if (!timeString) return ''
+    const [hour, minute] = timeString.split(':')
+    const hourNum = parseInt(hour)
+    const ampm = hourNum >= 12 ? 'PM' : 'AM'
+    const displayHour = hourNum === 0 ? 12 : hourNum > 12 ? hourNum - 12 : hourNum
+    return `${displayHour}:${minute} ${ampm}`
+  }
 
   const handleInputChange = (field: string, value: any) => {
     setFormData(prev => ({ ...prev, [field]: value }))
@@ -118,7 +128,7 @@ export default function CustomerInfoStep({
         <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-8">
           <div className="text-sm text-blue-800">
             <strong>Event Summary:</strong> {data.eventType} • {' '}
-            {data.eventDate && new Date(data.eventDate).toLocaleDateString()} at {data.eventTime} • {' '}
+            {data.eventDate && new Date(data.eventDate).toLocaleDateString()} at {data.startTime && data.endTime ? `${formatTimeForDisplay(data.startTime)} - ${formatTimeForDisplay(data.endTime)}` : 'TBD'} • {' '}
             {data.guestCount} guests
           </div>
         </div>

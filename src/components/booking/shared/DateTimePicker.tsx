@@ -1,29 +1,30 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { ChevronLeftIcon, ChevronRightIcon, ClockIcon } from '@heroicons/react/24/outline'
 
 interface DateTimePickerProps {
   selectedDate?: string
-  selectedTime?: string
+  startTime?: string
+  endTime?: string
   onDateChange: (date: string) => void
-  onTimeChange: (time: string) => void
-  availableSlots: string[]
+  onStartTimeChange: (time: string) => void
+  onEndTimeChange: (time: string) => void
   minDate?: string
   maxDate?: string
 }
 
 export default function DateTimePicker({
   selectedDate,
-  selectedTime,
+  startTime,
+  endTime,
   onDateChange,
-  onTimeChange,
-  availableSlots,
+  onStartTimeChange,
+  onEndTimeChange,
   minDate,
   maxDate
 }: DateTimePickerProps) {
   const [currentMonth, setCurrentMonth] = useState(new Date())
-  const [loading, setLoading] = useState(false)
 
   // Generate calendar days
   const getDaysInMonth = (date: Date) => {
@@ -76,11 +77,7 @@ export default function DateTimePicker({
     if (!isDateAvailable(date)) return
     
     const dateStr = formatDate(date)
-    setLoading(true)
     onDateChange(dateStr)
-    
-    // Simulate loading time for availability check
-    setTimeout(() => setLoading(false), 500)
   }
 
   const navigateMonth = (direction: 'prev' | 'next') => {
@@ -103,6 +100,30 @@ export default function DateTimePicker({
   const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 
   const days = getDaysInMonth(currentMonth)
+
+  // Generate time options for the time picker
+  const generateTimeOptions = () => {
+    const times = []
+    for (let hour = 0; hour < 24; hour++) {
+      for (let minute = 0; minute < 60; minute += 30) {
+        const timeString = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`
+        const displayTime = formatTimeForDisplay(timeString)
+        times.push({ value: timeString, display: displayTime })
+      }
+    }
+    return times
+  }
+
+  // Format time for display (12-hour AM/PM format)
+  const formatTimeForDisplay = (timeString: string) => {
+    const [hour, minute] = timeString.split(':')
+    const hourNum = parseInt(hour)
+    const ampm = hourNum >= 12 ? 'PM' : 'AM'
+    const displayHour = hourNum === 0 ? 12 : hourNum > 12 ? hourNum - 12 : hourNum
+    return `${displayHour}:${minute} ${ampm}`
+  }
+
+  const timeOptions = generateTimeOptions()
 
   return (
     <div className="space-y-6">
@@ -170,47 +191,84 @@ export default function DateTimePicker({
         </div>
       </div>
 
-      {/* Time Slots */}
+      {/* Time Selection */}
       {selectedDate && (
         <div className="bg-white border border-gray-200 rounded-lg p-4">
           <div className="flex items-center mb-4">
             <ClockIcon className="w-5 h-5 text-gray-500 mr-2" />
             <h3 className="text-lg font-semibold text-gray-900">
-              Available Times for {new Date(selectedDate).toLocaleDateString()}
+              Event Time for {new Date(selectedDate).toLocaleDateString()}
             </h3>
           </div>
 
-          {loading ? (
-            <div className="text-center py-8">
-              <div className="inline-block animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
-              <p className="text-gray-500 mt-2">Checking availability...</p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Start Time */}
+            <div>
+              <label htmlFor="startTime" className="block text-sm font-medium text-gray-700 mb-2">
+                Start Time
+              </label>
+              <select
+                id="startTime"
+                value={startTime}
+                onChange={(e) => onStartTimeChange(e.target.value)}
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              >
+                <option value="">Select start time</option>
+                {timeOptions.map(time => (
+                  <option key={time.value} value={time.value}>
+                    {time.display}
+                  </option>
+                ))}
+              </select>
             </div>
-          ) : availableSlots.length > 0 ? (
-            <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
-              {availableSlots.map(slot => (
-                <button
-                  key={slot}
-                  onClick={() => onTimeChange(slot)}
-                  className={`
-                    p-3 text-sm rounded-lg border transition-all duration-200
-                    ${selectedTime === slot
-                      ? 'bg-blue-600 text-white border-blue-600'
-                      : 'bg-white text-gray-900 border-gray-200 hover:border-blue-300 hover:bg-blue-50'
-                    }
-                  `}
-                >
-                  {slot}
-                </button>
-              ))}
+
+            {/* End Time */}
+            <div>
+              <label htmlFor="endTime" className="block text-sm font-medium text-gray-700 mb-2">
+                End Time
+              </label>
+              <select
+                id="endTime"
+                value={endTime}
+                onChange={(e) => onEndTimeChange(e.target.value)}
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                disabled={!startTime}
+              >
+                <option value="">Select end time</option>
+                {timeOptions
+                  .filter(time => !startTime || time.value > startTime)
+                  .map(time => (
+                    <option key={time.value} value={time.value}>
+                      {time.display}
+                    </option>
+                  ))
+                }
+              </select>
             </div>
-          ) : (
-            <div className="text-center py-8">
-              <p className="text-gray-500">No available time slots for this date</p>
-              <p className="text-sm text-gray-400 mt-1">
-                Please select a different date
-              </p>
+          </div>
+
+          {/* Duration Display */}
+          {startTime && endTime && (
+            <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+              <div className="text-sm text-blue-800">
+                <span className="font-medium">Event Duration:</span> 
+                {(() => {
+                  const start = new Date(`2000-01-01T${startTime}`)
+                  const end = new Date(`2000-01-01T${endTime}`)
+                  const durationHours = (end.getTime() - start.getTime()) / (1000 * 60 * 60)
+                  return ` ${durationHours} hour${durationHours !== 1 ? 's' : ''}`
+                })()}
+              </div>
+              <div className="text-xs text-blue-600 mt-1">
+                {formatTimeForDisplay(startTime)} - {formatTimeForDisplay(endTime)}
+              </div>
             </div>
           )}
+
+          {/* Help Text */}
+          <div className="mt-4 text-sm text-gray-600">
+            <p>Select your preferred start and end times for the event. The duration will be calculated automatically and used for pricing.</p>
+          </div>
         </div>
       )}
     </div>

@@ -28,9 +28,9 @@ export default async function BookingConfirmPage({ params }: BookingConfirmPageP
 
     const bookingData = await response.json()
     
-    // Fetch vendor data
+    // Fetch vendor data using vendorId
     const vendorResponse = await fetch(
-      `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/api/vendor/public/${bookingData.booking.vendorSlug || 'unknown'}`
+      `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/api/vendor/${bookingData.booking.vendorId}/public`
     )
     
     const vendorData = vendorResponse.ok ? await vendorResponse.json() : null

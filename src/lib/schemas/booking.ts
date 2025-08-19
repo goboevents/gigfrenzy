@@ -35,7 +35,9 @@ export const customerBookingCreateSchema = z.object({
   customerEmail: z.string().email('Valid email is required'),
   customerPhone: z.string().optional(),
   eventDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Date must be in YYYY-MM-DD format'),
-  eventTime: z.string().regex(/^\d{2}:\d{2}$/, 'Time must be in HH:MM format'),
+  startTime: z.string().regex(/^\d{2}:\d{2}$/, 'Start time must be in HH:MM format'),
+  endTime: z.string().regex(/^\d{2}:\d{2}$/, 'End time must be in HH:MM format'),
+  eventDuration: z.number().positive('Event duration must be positive'),
   eventType: eventTypeSchema,
   guestCount: z.number().int().min(1, 'Guest count must be at least 1').optional(),
   venueAddress: z.string().optional(),
@@ -102,7 +104,7 @@ export const availabilityResponseSchema = z.object({
   availableSlots: z.array(z.string()).optional(),
   conflictingBookings: z.array(z.object({
     id: z.number(),
-    eventTime: z.string(),
+    startTime: z.string(),
     duration: z.string().optional(),
   })).optional(),
 })

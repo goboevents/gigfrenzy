@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react'
 import { 
   ChevronLeftIcon, 
   ChevronRightIcon,
-  ExclamationTriangleIcon,
   CalendarDaysIcon,
   ClockIcon
 } from '@heroicons/react/24/outline'
@@ -27,74 +26,67 @@ export default function DateTimeSelectionStep({
   onPrevious
 }: DateTimeSelectionStepProps) {
   const [selectedDate, setSelectedDate] = useState(data.eventDate || '')
-  const [selectedTime, setSelectedTime] = useState(data.eventTime || '')
-  const [availableSlots, setAvailableSlots] = useState<string[]>([])
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const [startTime, setStartTime] = useState(data.startTime || '')
+  const [endTime, setEndTime] = useState(data.endTime || '')
+  const [eventDuration, setEventDuration] = useState<number>(0)
 
-  // Check availability when date changes
-  useEffect(() => {
-    if (selectedDate) {
-      checkAvailability(selectedDate)
-    }
-  }, [selectedDate, vendorSlug])
-
-  const checkAvailability = async (date: string) => {
-    try {
-      setLoading(true)
-      setError(null)
-      
-      const params = new URLSearchParams({
-        date,
-      })
-      
-      if (data.serviceId) {
-        params.append('serviceId', data.serviceId.toString())
-      }
-      if (data.packageId) {
-        params.append('packageId', data.packageId.toString())
-      }
-
-      const response = await fetch(`/api/vendor/public/${vendorSlug}/availability?${params}`)
-      if (!response.ok) {
-        throw new Error('Failed to check availability')
-      }
-
-      const result = await response.json()
-      setAvailableSlots(result.availability.availableSlots || [])
-      
-      // Clear selected time if it's no longer available
-      if (selectedTime && !result.availability.availableSlots.includes(selectedTime)) {
-        setSelectedTime('')
-      }
-    } catch (err) {
-      setError('Failed to check availability')
-      console.error('Error checking availability:', err)
-      setAvailableSlots([])
-    } finally {
-      setLoading(false)
-    }
+  // Format time for display (12-hour AM/PM format)
+  const formatTimeForDisplay = (timeString: string) => {
+    if (!timeString) return ''
+    const [hour, minute] = timeString.split(':')
+    const hourNum = parseInt(hour)
+    const ampm = hourNum >= 12 ? 'PM' : 'AM'
+    const displayHour = hourNum === 0 ? 12 : hourNum > 12 ? hourNum - 12 : hourNum
+    return `${displayHour}:${minute} ${ampm}`
   }
+
+  // Calculate event duration when start and end times change
+  useEffect(() => {
+    if (startTime && endTime) {
+      const start = new Date(`2000-01-01T${startTime}`)
+      const end = new Date(`2000-01-01T${endTime}`)
+      
+      if (end > start) {
+        const durationHours = (end.getTime() - start.getTime()) / (1000 * 60 * 60)
+        setEventDuration(durationHours)
+        
+        // Update booking data with duration for pricing calculations
+        onUpdate({
+          eventDate: selectedDate,
+          startTime,
+          endTime,
+          eventDuration: durationHours,
+        })
+      } else {
+        setEventDuration(0)
+      }
+    }
+  }, [startTime, endTime, selectedDate, onUpdate])
 
   const handleDateChange = (date: string) => {
     setSelectedDate(date)
-    setSelectedTime('') // Reset time when date changes
     onUpdate({
       eventDate: date,
-      eventTime: '',
+      startTime,
+      endTime,
+      eventDuration,
     })
   }
 
-  const handleTimeChange = (time: string) => {
-    setSelectedTime(time)
-    onUpdate({
-      eventDate: selectedDate,
-      eventTime: time,
-    })
+  const handleStartTimeChange = (time: string) => {
+    setStartTime(time)
+    // Reset end time if it's before start time
+    if (endTime && time >= endTime) {
+      setEndTime('')
+    }
+  }
+
+  const handleEndTimeChange = (time: string) => {
+    setEndTime(time)
   }
 
   const handleNext = () => {
-    if (selectedDate && selectedTime) {
+    if (selectedDate && startTime && endTime && eventDuration > 0) {
       onNext()
     }
   }
@@ -112,7 +104,7 @@ export default function DateTimeSelectionStep({
     return maxDate.toISOString().split('T')[0]
   }
 
-  const canProceed = selectedDate && selectedTime
+  const canProceed = selectedDate && startTime && endTime && eventDuration > 0
 
   return (
     <div className="px-4 py-8">
@@ -133,12 +125,12 @@ export default function DateTimeSelectionStep({
             <div className="flex items-center">
               <CalendarDaysIcon className="w-5 h-5 text-blue-600 mr-2" />
               <span className="text-blue-900 font-medium">
-                {data.eventType?.charAt(0).toUpperCase() + data.eventType?.slice(1)} Event
+                {data.eventType ? (data.eventType.charAt(0).toUpperCase() + data.eventType.slice(1)) : 'Your'} Event
               </span>
             </div>
             <div className="flex items-center">
               <span className="text-blue-800">
-                {data.guestCount} guests • {data.selectedService?.title}
+                {data.guestCount} guests
               </span>
             </div>
           </div>
@@ -149,28 +141,14 @@ export default function DateTimeSelectionStep({
           <div className="lg:col-span-2">
             <DateTimePicker
               selectedDate={selectedDate}
-              selectedTime={selectedTime}
+              startTime={startTime}
+              endTime={endTime}
               onDateChange={handleDateChange}
-              onTimeChange={handleTimeChange}
-              availableSlots={availableSlots}
+              onStartTimeChange={handleStartTimeChange}
+              onEndTimeChange={handleEndTimeChange}
               minDate={getMinDate()}
               maxDate={getMaxDate()}
             />
-
-            {error && (
-              <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg">
-                <div className="flex items-center">
-                  <ExclamationTriangleIcon className="w-5 h-5 text-red-600 mr-2" />
-                  <p className="text-red-800">{error}</p>
-                </div>
-                <button
-                  onClick={() => selectedDate && checkAvailability(selectedDate)}
-                  className="mt-2 text-red-600 hover:text-red-700 text-sm underline"
-                >
-                  Try again
-                </button>
-              </div>
-            )}
           </div>
 
           {/* Selection Summary */}
@@ -208,52 +186,34 @@ export default function DateTimeSelectionStep({
                       Time
                     </div>
                     <div className="text-gray-900 font-medium">
-                      {selectedTime || 'Not selected'}
+                      {startTime && endTime 
+                        ? `${formatTimeForDisplay(startTime)} - ${formatTimeForDisplay(endTime)}`
+                        : 'Not selected'
+                      }
                     </div>
                   </div>
 
-                  {/* Service Info */}
-                  <div className="pt-4 border-t border-gray-200">
-                    <div className="text-sm text-gray-600 mb-1">Service</div>
-                    <div className="text-gray-900 font-medium">
-                      {data.selectedService?.title}
-                    </div>
-                    <div className="text-sm text-gray-500 mt-1">
-                      Duration: {data.selectedService?.duration}
-                    </div>
-                  </div>
-
-                  {/* Pricing Preview */}
-                  <div className="pt-4 border-t border-gray-200">
-                    <div className="text-sm text-gray-600 mb-1">Total</div>
-                    <div className="text-xl font-bold text-gray-900">
-                      ${((data.totalPriceCents || 0) / 100).toFixed(2)}
-                    </div>
-                    {data.depositAmountCents && data.depositAmountCents > 0 && (
-                      <div className="text-sm text-gray-500">
-                        ${(data.depositAmountCents / 100).toFixed(2)} deposit required
+                  {/* Duration Info */}
+                  {eventDuration > 0 && (
+                    <div className="pt-4 border-t border-gray-200">
+                      <div className="text-sm text-gray-600 mb-1">Event Duration</div>
+                      <div className="text-gray-900 font-medium">
+                        {eventDuration} hour{eventDuration !== 1 ? 's' : ''}
                       </div>
-                    )}
-                  </div>
+                      <div className="text-sm text-gray-500 mt-1">
+                        This will be used to calculate pricing
+                      </div>
+                    </div>
+                  )}
                 </div>
 
-                {/* Availability Info */}
-                {selectedDate && (
-                  <div className="mt-6 p-3 bg-gray-50 rounded-lg">
-                    <div className="text-sm text-gray-600">
-                      {loading ? (
-                        <div className="flex items-center">
-                          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-600 mr-2"></div>
-                          Checking availability...
-                        </div>
-                      ) : availableSlots.length > 0 ? (
-                        `${availableSlots.length} time slots available`
-                      ) : (
-                        'No available slots for this date'
-                      )}
-                    </div>
+                {/* Help Text */}
+                <div className="mt-6 p-3 bg-gray-50 rounded-lg">
+                  <div className="text-sm text-gray-600">
+                    <p className="mb-2">Select your preferred date and time for the event.</p>
+                    <p>The event duration will be calculated automatically and used to determine pricing for services and packages.</p>
                   </div>
-                )}
+                </div>
               </div>
             </div>
           </div>
@@ -290,10 +250,14 @@ export default function DateTimeSelectionStep({
           <div className="text-center mt-4">
             <p className="text-sm text-gray-500">
               {!selectedDate 
-                ? 'Please select a date to see available times'
-                : !selectedTime 
-                  ? 'Please select a time to continue'
-                  : ''
+                ? 'Please select a date'
+                : !startTime 
+                  ? 'Please select a start time'
+                  : !endTime 
+                    ? 'Please select an end time'
+                    : eventDuration <= 0
+                      ? 'End time must be after start time'
+                      : ''
               }
             </p>
           </div>

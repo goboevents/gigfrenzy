@@ -5,7 +5,7 @@ import { ClockIcon, CurrencyDollarIcon } from '@heroicons/react/24/outline'
 
 interface ServiceCardProps {
   service: {
-    id: number
+    id: number | string
     title: string
     description: string
     priceCents: number
@@ -19,7 +19,7 @@ interface ServiceCardProps {
     depositPercentage: number
   }
   isSelected: boolean
-  onSelect: (serviceId: number) => void
+  onSelect: (serviceId: number | string) => void
 }
 
 export default function ServiceCard({ service, isSelected, onSelect }: ServiceCardProps) {

@@ -14,7 +14,9 @@ export interface BookingData {
   // Event details
   eventType: string
   eventDate: string
-  eventTime: string
+  startTime: string
+  endTime: string
+  eventDuration: number
   guestCount: number
   venueAddress: string
   specialRequirements: string
@@ -43,8 +45,8 @@ interface BookingFlowProps {
 
 const STEPS = [
   'Event Details',
-  'Select Service',
   'Choose Date & Time',
+  'Select Service',
   'Your Information',
   'Review & Confirm'
 ]
@@ -70,6 +72,8 @@ export default function BookingFlow({
       setLocalVendorData(vendorData)
     }
   }, [vendorSlug, vendorData])
+
+
 
   const loadVendorData = async () => {
     try {
@@ -109,12 +113,14 @@ export default function BookingFlow({
 
       // Prepare booking data
       const bookingPayload = {
-        vendorId: vendorData?.vendor?.id,
+        vendorId: localVendorData?.vendor?.id,
         customerName: bookingData.customerName,
         customerEmail: bookingData.customerEmail,
         customerPhone: bookingData.customerPhone,
         eventDate: bookingData.eventDate,
-        eventTime: bookingData.eventTime,
+        startTime: bookingData.startTime,
+        endTime: bookingData.endTime,
+        eventDuration: bookingData.eventDuration,
         eventType: bookingData.eventType,
         guestCount: bookingData.guestCount,
         venueAddress: bookingData.venueAddress,
@@ -140,8 +146,10 @@ export default function BookingFlow({
 
       const result = await response.json()
       setBookingId(result.booking.id)
-      setCurrentStep(6) // Move to confirmation step
-
+      
+      // Navigate to the confirmation page
+      window.location.href = `/booking/confirm/${result.booking.id}`
+      
       if (onComplete) {
         onComplete(bookingData as BookingData)
       }
@@ -166,9 +174,8 @@ export default function BookingFlow({
         )
       case 2:
         return (
-          <ServiceSelectionStep
+          <DateTimeSelectionStep
             vendorSlug={vendorSlug}
-            vendorData={localVendorData}
             data={bookingData}
             onUpdate={updateBookingData}
             onNext={handleNext}
@@ -177,8 +184,9 @@ export default function BookingFlow({
         )
       case 3:
         return (
-          <DateTimeSelectionStep
+          <ServiceSelectionStep
             vendorSlug={vendorSlug}
+            vendorData={localVendorData}
             data={bookingData}
             onUpdate={updateBookingData}
             onNext={handleNext}

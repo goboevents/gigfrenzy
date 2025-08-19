@@ -30,6 +30,16 @@ export default function BookingConfirmation({
 }: BookingConfirmationProps) {
   const [copied, setCopied] = useState(false)
 
+  // Format time for display (12-hour AM/PM format)
+  const formatTimeForDisplay = (timeString: string) => {
+    if (!timeString) return ''
+    const [hour, minute] = timeString.split(':')
+    const hourNum = parseInt(hour)
+    const ampm = hourNum >= 12 ? 'PM' : 'AM'
+    const displayHour = hourNum === 0 ? 12 : hourNum > 12 ? hourNum - 12 : hourNum
+    return `${displayHour}:${minute} ${ampm}`
+  }
+
   const formatPrice = (cents: number) => {
     return `$${(cents / 100).toFixed(2)}`
   }
@@ -231,7 +241,7 @@ export default function BookingConfirmation({
                   <div>
                     <div className="text-sm text-gray-600">Event Type</div>
                     <div className="font-medium text-gray-900">
-                      {bookingData.eventType?.charAt(0).toUpperCase() + bookingData.eventType?.slice(1)}
+                      {bookingData.eventType ? (bookingData.eventType.charAt(0).toUpperCase() + bookingData.eventType.slice(1)) : 'Unknown'}
                     </div>
                   </div>
                   
@@ -251,9 +261,21 @@ export default function BookingConfirmation({
                       Time
                     </div>
                     <div className="font-medium text-gray-900">
-                      {bookingData.eventTime}
+                      {bookingData.startTime && bookingData.endTime 
+                        ? `${formatTimeForDisplay(bookingData.startTime)} - ${formatTimeForDisplay(bookingData.endTime)}`
+                        : 'Not specified'
+                      }
                     </div>
                   </div>
+
+                  {bookingData.eventDuration && bookingData.eventDuration > 0 && (
+                    <div>
+                      <div className="text-sm text-gray-600 mb-1">Event Duration</div>
+                      <div className="font-medium text-gray-900">
+                        {bookingData.eventDuration} hour{bookingData.eventDuration !== 1 ? 's' : ''}
+                      </div>
+                    </div>
+                  )}
                 </div>
                 
                 <div className="space-y-3">

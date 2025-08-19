@@ -9,7 +9,7 @@ interface PriceCalculatorProps {
   guestCount?: number
   pricingModel: 'fixed' | 'hourly' | 'package'
   hourlyRate?: number
-  duration?: number // hours for hourly pricing
+  eventDuration?: number // hours for hourly pricing
   additionalFees?: Array<{
     name: string
     amount: number
@@ -29,7 +29,7 @@ export default function PriceCalculator({
   guestCount,
   pricingModel,
   hourlyRate,
-  duration = 4,
+  eventDuration = 4,
   additionalFees = [],
   discounts = []
 }: PriceCalculatorProps) {
@@ -39,8 +39,8 @@ export default function PriceCalculator({
 
   // Calculate base amount
   const getBaseAmount = () => {
-    if (pricingModel === 'hourly' && hourlyRate) {
-      return hourlyRate * duration
+    if (pricingModel === 'hourly' && hourlyRate && eventDuration) {
+      return hourlyRate * eventDuration
     }
     return basePrice
   }
@@ -80,7 +80,7 @@ export default function PriceCalculator({
         <div className="flex justify-between items-center">
           <span className="text-gray-600">
             {pricingModel === 'hourly' 
-              ? `Base rate (${duration} hours @ ${formatPrice(hourlyRate || 0)}/hr)`
+              ? `Base rate (${eventDuration} hours @ ${formatPrice(hourlyRate || 0)}/hr)`
               : 'Base price'
             }
           </span>

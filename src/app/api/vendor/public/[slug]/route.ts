@@ -124,7 +124,7 @@ export async function GET(
       const availability = availabilityStmt.get(vendorProfile.vendorId) as AvailabilityRow | undefined
 
       const formattedServices = servicesData.map(service => ({
-        id: service.id,
+        id: Number(service.id),
         title: service.title,
         description: service.description,
         priceCents: service.priceCents,
@@ -141,7 +141,7 @@ export async function GET(
       }))
 
       const formattedPackages = packagesData.map(pkg => ({
-        id: pkg.id,
+        id: Number(pkg.id),
         title: pkg.title,
         description: pkg.description,
         priceCents: pkg.priceCents,

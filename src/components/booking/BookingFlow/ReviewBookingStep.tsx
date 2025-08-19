@@ -37,6 +37,8 @@ export default function ReviewBookingStep({
 }: ReviewBookingStepProps) {
   const [showPriceBreakdown, setShowPriceBreakdown] = useState(false)
 
+
+
   const formatPrice = (cents: number) => {
     return `$${(cents / 100).toFixed(2)}`
   }
@@ -48,6 +50,16 @@ export default function ReviewBookingStep({
       month: 'long',
       day: 'numeric'
     })
+  }
+
+  // Format time for display (12-hour AM/PM format)
+  const formatTimeForDisplay = (timeString: string) => {
+    if (!timeString) return ''
+    const [hour, minute] = timeString.split(':')
+    const hourNum = parseInt(hour)
+    const ampm = hourNum >= 12 ? 'PM' : 'AM'
+    const displayHour = hourNum === 0 ? 12 : hourNum > 12 ? hourNum - 12 : hourNum
+    return `${displayHour}:${minute} ${ampm}`
   }
 
   const getEventTypeDisplay = (type: string) => {
@@ -194,10 +206,22 @@ export default function ReviewBookingStep({
                       Time
                     </div>
                     <div className="font-medium text-gray-900">
-                      {data.eventTime}
+                      {data.startTime && data.endTime 
+                        ? `${formatTimeForDisplay(data.startTime)} - ${formatTimeForDisplay(data.endTime)}`
+                        : 'Not specified'
+                      }
                     </div>
                   </div>
                 </div>
+
+                {data.eventDuration && data.eventDuration > 0 && (
+                  <div>
+                    <div className="text-sm text-gray-600 mb-1">Event Duration</div>
+                    <div className="font-medium text-gray-900">
+                      {data.eventDuration} hour{data.eventDuration !== 1 ? 's' : ''}
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
 
@@ -256,10 +280,29 @@ export default function ReviewBookingStep({
                 </h3>
                 
                 <div className="space-y-3">
+                  {/* Service/Package Details */}
+                  <div className="bg-gray-50 rounded-lg p-3 mb-3">
+                    <div className="text-sm text-gray-600 mb-1">
+                      {data.selectedService?.type === 'package' ? 'Package' : 'Service'}
+                    </div>
+                    <div className="font-medium text-gray-900 mb-1">
+                      {data.selectedService?.title}
+                    </div>
+                    <div className="text-xs text-gray-500">
+                      {data.selectedService?.pricingModel === 'hourly' && data.eventDuration
+                        ? `${data.eventDuration} hour${data.eventDuration !== 1 ? 's' : ''} @ ${formatPrice(data.selectedService?.hourlyRate || 0)}/hr`
+                        : data.selectedService?.duration || 'Fixed price'
+                      }
+                    </div>
+                  </div>
+                  
                   <div className="flex justify-between">
-                    <span className="text-gray-600">Service</span>
+                    <span className="text-gray-600">Base Price</span>
                     <span className="font-medium">
-                      {formatPrice(data.totalPriceCents || 0)}
+                      {data.selectedService?.pricingModel === 'hourly' && data.eventDuration && data.selectedService?.hourlyRate
+                        ? formatPrice((data.selectedService.hourlyRate * data.eventDuration))
+                        : formatPrice(data.selectedService?.priceCents || 0)
+                      }
                     </span>
                   </div>
                   

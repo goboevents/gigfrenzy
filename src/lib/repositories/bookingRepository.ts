@@ -14,14 +14,16 @@ import type {
 } from '@/lib/schemas/booking'
 
 // Database row types
-interface DatabaseRow {
+interface CustomerBookingRow {
   id: number
   vendorId: number
   customerName: string
   customerEmail: string
   customerPhone: string | null
   eventDate: string
-  eventTime: string
+  startTime: string
+  endTime: string
+  eventDuration: number
   eventType: string
   guestCount: number | null
   venueAddress: string | null
@@ -54,7 +56,7 @@ interface AvailabilityRow {
 
 interface ConflictingBookingRow {
   id: number
-  eventTime: string
+  startTime: string
 }
 
 interface MessageRow {
@@ -84,19 +86,22 @@ export class BookingRepository {
     
     const stmt = this.db.prepare(`
       INSERT INTO customer_bookings (
-        vendorId, customerName, customerEmail, customerPhone, eventDate, eventTime,
+        vendorId, customerName, customerEmail, customerPhone, eventDate, eventTime, startTime, endTime, eventDuration,
         eventType, guestCount, venueAddress, specialRequirements, serviceId, packageId,
         totalPriceCents, depositAmountCents, status, paymentStatus, createdAt, updatedAt
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `)
 
-    const result = stmt.run(
+    const insertResult = stmt.run(
       input.vendorId,
       input.customerName,
       input.customerEmail,
       input.customerPhone || null,
       input.eventDate,
-      input.eventTime,
+      input.startTime, // eventTime (for backward compatibility)
+      input.startTime,
+      input.endTime,
+      input.eventDuration,
       input.eventType,
       input.guestCount || null,
       input.venueAddress || null,
@@ -111,9 +116,13 @@ export class BookingRepository {
       now
     )
 
-    const bookingId = result.lastInsertRowid as number
+    const bookingId = insertResult.lastInsertRowid as number
     
-    return this.getCustomerBookingById(bookingId)!
+    const createdBooking = this.getCustomerBookingById(bookingId)
+    if (!createdBooking) {
+      throw new Error('Failed to create booking')
+    }
+    return createdBooking
   }
 
   // Get a customer booking by ID
@@ -122,7 +131,7 @@ export class BookingRepository {
       SELECT * FROM customer_bookings WHERE id = ?
     `)
     
-    const row = stmt.get(id) as DatabaseRow | undefined
+    const row = stmt.get(id) as CustomerBookingRow | undefined
     
     if (!row) return null
     
@@ -133,8 +142,10 @@ export class BookingRepository {
       customerEmail: row.customerEmail,
       customerPhone: row.customerPhone || undefined,
       eventDate: row.eventDate,
-      eventTime: row.eventTime,
-      eventType: row.eventType as EventType,
+      startTime: row.startTime,
+      endTime: row.endTime,
+      eventDuration: row.eventDuration,
+      eventType: row.eventType as any,
       guestCount: row.guestCount || undefined,
       venueAddress: row.venueAddress || undefined,
       specialRequirements: row.specialRequirements || undefined,
@@ -142,8 +153,8 @@ export class BookingRepository {
       packageId: row.packageId || undefined,
       totalPriceCents: row.totalPriceCents,
       depositAmountCents: row.depositAmountCents,
-      status: row.status as BookingStatus,
-      paymentStatus: row.paymentStatus as PaymentStatus,
+      status: row.status as any,
+      paymentStatus: row.paymentStatus as any,
       createdAt: row.createdAt,
       updatedAt: row.updatedAt,
     }
@@ -173,9 +184,17 @@ export class BookingRepository {
       updateFields.push('eventDate = ?')
       values.push(input.eventDate)
     }
-    if (input.eventTime !== undefined) {
-      updateFields.push('eventTime = ?')
-      values.push(input.eventTime)
+    if (input.startTime !== undefined) {
+      updateFields.push('startTime = ?')
+      values.push(input.startTime)
+    }
+    if (input.endTime !== undefined) {
+      updateFields.push('endTime = ?')
+      values.push(input.endTime)
+    }
+    if (input.eventDuration !== undefined) {
+      updateFields.push('eventDuration = ?')
+      values.push(input.eventDuration)
     }
     if (input.eventType !== undefined) {
       updateFields.push('eventType = ?')
@@ -281,16 +300,18 @@ export class BookingRepository {
     `)
     
     const allValues = [...values, query.limit, query.offset]
-    const rows = stmt.all(...allValues) as DatabaseRow[]
+    const rows = stmt.all(...allValues) as CustomerBookingRow[]
     
-    return rows.map((row: DatabaseRow) => ({
+    return rows.map((row: CustomerBookingRow) => ({
       id: row.id,
       vendorId: row.vendorId,
       customerName: row.customerName,
       customerEmail: row.customerEmail,
       customerPhone: row.customerPhone || undefined,
       eventDate: row.eventDate,
-      eventTime: row.eventTime,
+      startTime: row.startTime,
+      endTime: row.endTime,
+      eventDuration: row.eventDuration,
       eventType: row.eventType as EventType,
       guestCount: row.guestCount || undefined,
       venueAddress: row.venueAddress || undefined,
@@ -328,7 +349,7 @@ export class BookingRepository {
     
     // Check for conflicting bookings on the same date
     const conflictingBookingsStmt = this.db.prepare(`
-      SELECT id, eventTime FROM customer_bookings 
+      SELECT id, startTime FROM customer_bookings 
       WHERE vendorId = ? AND eventDate = ? AND status NOT IN ('cancelled', 'completed')
     `)
     const conflictingBookings = conflictingBookingsStmt.all(vendorId, date) as ConflictingBookingRow[]
@@ -349,7 +370,7 @@ export class BookingRepository {
         availableSlots: [],
         conflictingBookings: conflictingBookings.map(b => ({
           id: b.id,
-          eventTime: b.eventTime,
+          startTime: b.startTime,
         }))
       }
     }
@@ -365,7 +386,7 @@ export class BookingRepository {
     while (currentTime < endTimeObj) {
       const timeString = currentTime.toTimeString().slice(0, 5)
       const hasConflict = conflictingBookings.some(booking => 
-        booking.eventTime === timeString
+        booking.startTime === timeString
       )
       
       if (!hasConflict) {
@@ -382,7 +403,7 @@ export class BookingRepository {
       availableSlots,
       conflictingBookings: conflictingBookings.map(b => ({
         id: b.id,
-        eventTime: b.eventTime,
+        startTime: b.startTime,
       }))
     }
   }
