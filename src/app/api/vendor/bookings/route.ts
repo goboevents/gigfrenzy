@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { requireAuthUser, getVendorIdForUser } from '@/lib/auth'
-import { listBookingsForVendor } from '@/lib/repositories/bookingRepository'
+import { bookingRepository } from '@/lib/repositories/bookingRepository'
 
 export const runtime = 'nodejs'
 
@@ -9,7 +9,12 @@ export async function GET() {
     const auth = await requireAuthUser()
     const vendorId = getVendorIdForUser(auth.userId)
     if (!vendorId) return NextResponse.json({ bookings: [] })
-    const bookings = listBookingsForVendor(vendorId)
+    
+    const bookings = bookingRepository.getCustomerBookings({ 
+      vendorId,
+      limit: 20,
+      offset: 0
+    })
     return NextResponse.json({ bookings })
   } catch (e) {
     if ((e as Error).message === 'UNAUTHORIZED') {
