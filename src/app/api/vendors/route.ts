@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { vendorCreateInputSchema } from '@/lib/schema'
-import { createVendor, listVendors } from '@/lib/repositories/vendorRepository'
+import { createVendor } from '@/lib/repositories/vendorRepository'
 
 export const runtime = 'nodejs'
 
@@ -34,13 +34,10 @@ export async function POST(request: NextRequest) {
   }
 }
 
-export async function GET(request: NextRequest) {
-  const { searchParams } = new URL(request.url)
-  const limit = Number(searchParams.get('limit') ?? '20')
-  const offset = Number(searchParams.get('offset') ?? '0')
-  const safeLimit = Number.isFinite(limit) && limit > 0 && limit <= 100 ? limit : 20
-  const safeOffset = Number.isFinite(offset) && offset >= 0 ? offset : 0
-
-  const vendors = listVendors(safeLimit, safeOffset)
-  return NextResponse.json({ vendors, limit: safeLimit, offset: safeOffset })
+export async function GET() {
+  return NextResponse.json({
+    message: 'Vendor signup endpoint',
+    method: 'POST',
+    requiredFields: ['businessName', 'contactName', 'email', 'businessType']
+  })
 }

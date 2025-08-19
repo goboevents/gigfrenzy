@@ -24,3 +24,12 @@ export type VendorRecord = {
   createdAt: string
 }
 
+export const vendorUserCreateSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(8),
+  name: z.string().min(1),
+  role: z.enum(['vendor', 'admin']).default('vendor'),
+})
+
+export type VendorUserCreateInput = z.infer<typeof vendorUserCreateSchema>
+

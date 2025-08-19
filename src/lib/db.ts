@@ -30,6 +30,14 @@ function initializeDatabase(filePath: string): Database.Database {
       description TEXT DEFAULT '',
       createdAt TEXT NOT NULL
     );
+    CREATE TABLE IF NOT EXISTS vendor_users (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      email TEXT NOT NULL UNIQUE,
+      passwordHash TEXT NOT NULL,
+      name TEXT NOT NULL,
+      role TEXT NOT NULL DEFAULT 'vendor',
+      createdAt TEXT NOT NULL
+    );
   `)
 
   return db
