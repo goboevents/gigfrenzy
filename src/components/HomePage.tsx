@@ -85,7 +85,7 @@ export default function HomePage() {
           </p>
         </div>
 
-        <a href="/vendor-signup" className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30">
+        <a href="/signup" className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30">
           <h2 className="mb-3 text-2xl font-semibold">
             Vendor Signup{' '}
             <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
@@ -131,6 +131,29 @@ export default function HomePage() {
           <p className="m-0 max-w-[30ch] text-sm opacity-50">
             Built with the latest Next.js features
           </p>
+        </div>
+      </div>
+
+      {/* Call to Action Section */}
+      <div className="text-center mt-16">
+        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-8 max-w-4xl mx-auto">
+          <h2 className="text-3xl font-bold text-gray-900 mb-4">
+            Ready to Start Getting Gigs?
+          </h2>
+          <p className="text-lg text-gray-600 mb-8">
+            Join thousands of vendors who are already booking events and growing their business
+          </p>
+          <div className="space-y-4">
+            <a
+              href="/signup"
+              className="inline-block bg-green-600 text-white px-8 py-4 rounded-lg font-semibold text-lg hover:bg-green-700 transition-colors duration-200 shadow-lg hover:shadow-xl"
+            >
+              Start Getting Gigs Today
+            </a>
+            <p className="text-sm text-gray-500">
+              Simple email-first signup • No commitment required
+            </p>
+          </div>
         </div>
       </div>
     </main>

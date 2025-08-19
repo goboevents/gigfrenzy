@@ -23,10 +23,8 @@ export default function BusinessProfileStep({
   allData
 }: BusinessProfileStepProps) {
   const [formData, setFormData] = useState({
-    businessName: stepData.businessName || '',
     businessType: stepData.businessType || '',
     description: stepData.description || '',
-    website: stepData.website || '',
     foundedYear: stepData.foundedYear || '',
     employeeCount: stepData.employeeCount || '',
     businessLicense: stepData.businessLicense || '',
@@ -60,10 +58,6 @@ export default function BusinessProfileStep({
   const validateForm = () => {
     const newErrors: Record<string, string> = {}
 
-    if (!formData.businessName) {
-      newErrors.businessName = 'Business name is required'
-    }
-
     if (!formData.businessType) {
       newErrors.businessType = 'Business type is required'
     }
@@ -72,10 +66,6 @@ export default function BusinessProfileStep({
       newErrors.description = 'Business description is required'
     } else if (formData.description.length < 50) {
       newErrors.description = 'Description must be at least 50 characters long'
-    }
-
-    if (formData.website && !/^https?:\/\/.+/.test(formData.website)) {
-      newErrors.website = 'Please enter a valid website URL starting with http:// or https://'
     }
 
     setErrors(newErrors)
@@ -111,24 +101,6 @@ export default function BusinessProfileStep({
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Business Name *
-          </label>
-          <input
-            type="text"
-            value={formData.businessName}
-            onChange={(e) => handleInputChange('businessName', e.target.value)}
-            className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-              errors.businessName ? 'border-red-300' : 'border-gray-300'
-            }`}
-            placeholder="Enter your business name"
-          />
-          {errors.businessName && (
-            <p className="text-red-500 text-sm mt-1">{errors.businessName}</p>
-          )}
-        </div>
-
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
             Business Type *
@@ -173,23 +145,7 @@ export default function BusinessProfileStep({
           </p>
         </div>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Website
-          </label>
-          <input
-            type="url"
-            value={formData.website}
-            onChange={(e) => handleInputChange('website', e.target.value)}
-            className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-              errors.website ? 'border-red-300' : 'border-gray-300'
-            }`}
-            placeholder="https://yourwebsite.com"
-          />
-          {errors.website && (
-            <p className="text-red-500 text-sm mt-1">{errors.website}</p>
-          )}
-        </div>
+
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>

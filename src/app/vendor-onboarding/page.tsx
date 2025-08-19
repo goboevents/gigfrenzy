@@ -2,7 +2,7 @@
 
 import { Builder } from '@builder.io/react'
 import OnboardingContainer from '../../components/onboarding/OnboardingContainer'
-import AccountCreationStep from '../../components/onboarding/steps/AccountCreationStep'
+import AccountSetupStep from '../../components/onboarding/steps/AccountSetupStep'
 import BusinessProfileStep from '../../components/onboarding/steps/BusinessProfileStep'
 import ServiceCategoriesStep from '../../components/onboarding/steps/ServiceCategoriesStep'
 import LocationAvailabilityStep from '../../components/onboarding/steps/LocationAvailabilityStep'
@@ -13,10 +13,10 @@ import ReviewSubmitStep from '../../components/onboarding/steps/ReviewSubmitStep
 // Define the onboarding steps
 const onboardingSteps = [
   {
-    id: 'account-creation',
-    title: 'Account Creation',
-    description: 'Create your vendor account',
-    component: AccountCreationStep,
+    id: 'account-setup',
+    title: 'Account Setup',
+    description: 'Complete your account information',
+    component: AccountSetupStep,
     isComplete: false
   },
   {

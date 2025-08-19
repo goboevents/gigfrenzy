@@ -4,9 +4,15 @@ A comprehensive, multi-step onboarding experience for vendors to sign up and set
 
 ## Overview
 
-The vendor onboarding system consists of 7 sequential steps that guide vendors through the complete account setup process:
+The vendor onboarding system offers two signup flows:
 
-1. **Account Creation** - Basic user information and credentials
+### 🚀 **Quick Start Flow (Email-First)**
+1. **Email Landing** - Submit email to create account and receive verification
+2. **Account Setup** - Complete personal info, business name, website, phone, and password
+3. **Continue to Full Onboarding** - Complete remaining steps for full profile
+
+### 📋 **Complete Onboarding Flow**
+1. **Account Setup** - Personal info, business name, website, phone, and password
 2. **Business Profile** - Business details and description
 3. **Service Categories** - Selection of services offered
 4. **Location & Availability** - Service areas and scheduling
@@ -108,13 +114,14 @@ All components are automatically registered with Builder.io for visual editing:
 ### Available Builder.io Components
 
 1. **Onboarding Container** - Main flow container with progress tracking
-2. **Account Creation Step** - User registration form
-3. **Business Profile Step** - Business information form
-4. **Service Categories Step** - Service selection interface
-5. **Location & Availability Step** - Geographic and scheduling setup
-6. **Documentation Step** - File upload interface
-7. **Pricing & Packages Step** - Pricing structure setup
-8. **Review & Submit Step** - Final review and submission
+2. **Email First Landing** - Email capture and account creation
+3. **Account Setup Step** - Complete account information form
+4. **Business Profile Step** - Business information form
+5. **Service Categories Step** - Service selection interface
+6. **Location & Availability Step** - Geographic and scheduling setup
+7. **Documentation Step** - File upload interface
+8. **Pricing & Packages Step** - Pricing structure setup
+9. **Review & Submit Step** - Final review and submission
 
 ## Data Flow
 

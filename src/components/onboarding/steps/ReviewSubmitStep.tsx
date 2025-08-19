@@ -159,7 +159,7 @@ export default function ReviewSubmitStep({
 
       <div className="space-y-6 mb-8">
         {/* Account Information */}
-        {renderSection('Account Information', allData.accountCreation, '👤')}
+        {renderSection('Account Information', allData.accountSetup, '👤')}
         
         {/* Business Profile */}
         {renderSection('Business Profile', allData.businessProfile, '🏢')}

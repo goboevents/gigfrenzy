@@ -177,16 +177,30 @@ export default function DemoPage() {
         </div>
 
         {/* Call to Action */}
-        <div className="text-center">
-          <Link
-            href="/vendor-onboarding"
-            className="inline-block bg-blue-600 text-white px-8 py-4 rounded-lg font-semibold text-lg hover:bg-blue-700 transition-colors duration-200 shadow-lg hover:shadow-xl"
-          >
-            Try the Onboarding System
-          </Link>
-          <p className="text-gray-600 mt-4">
-            Experience the complete vendor onboarding flow
-          </p>
+        <div className="text-center space-y-6">
+          <div>
+            <Link
+              href="/signup"
+              className="inline-block bg-green-600 text-white px-8 py-4 rounded-lg font-semibold text-lg hover:bg-green-700 transition-colors duration-200 shadow-lg hover:shadow-xl"
+            >
+              Start Getting Gigs Today
+            </Link>
+            <p className="text-gray-600 mt-4">
+              Simple email-first signup to get started
+            </p>
+          </div>
+          
+          <div className="border-t border-gray-200 pt-6">
+            <Link
+              href="/vendor-onboarding"
+              className="inline-block bg-blue-600 text-white px-8 py-4 rounded-lg font-semibold text-lg hover:bg-blue-700 transition-colors duration-200 shadow-lg hover:shadow-xl"
+            >
+              Try the Complete Onboarding System
+            </Link>
+            <p className="text-gray-600 mt-4">
+              Experience the full vendor onboarding flow
+            </p>
+          </div>
         </div>
       </div>
     </div>
