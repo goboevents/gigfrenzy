@@ -117,6 +117,25 @@ function initializeDatabase(filePath: string): Database.Database {
       updatedAt TEXT NOT NULL,
       FOREIGN KEY(vendorId) REFERENCES vendors(id) ON DELETE CASCADE
     );
+    CREATE TABLE IF NOT EXISTS vendor_reviews (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      vendorId INTEGER NOT NULL,
+      customerName TEXT NOT NULL,
+      rating INTEGER NOT NULL DEFAULT 5,
+      comment TEXT DEFAULT '',
+      createdAt TEXT NOT NULL,
+      FOREIGN KEY(vendorId) REFERENCES vendors(id) ON DELETE CASCADE
+    );
+    CREATE TABLE IF NOT EXISTS vendor_offers (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      vendorId INTEGER NOT NULL,
+      title TEXT NOT NULL,
+      description TEXT DEFAULT '',
+      discountPercent INTEGER NOT NULL DEFAULT 0,
+      validUntil TEXT NOT NULL,
+      createdAt TEXT NOT NULL,
+      FOREIGN KEY(vendorId) REFERENCES vendors(id) ON DELETE CASCADE
+    );
     -- Legacy tables for backward compatibility
     CREATE TABLE IF NOT EXISTS services (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
