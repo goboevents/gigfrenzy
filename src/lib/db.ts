@@ -38,6 +38,72 @@ function initializeDatabase(filePath: string): Database.Database {
       role TEXT NOT NULL DEFAULT 'vendor',
       createdAt TEXT NOT NULL
     );
+    CREATE TABLE IF NOT EXISTS vendor_user_vendors (
+      userId INTEGER NOT NULL UNIQUE,
+      vendorId INTEGER NOT NULL UNIQUE,
+      PRIMARY KEY (userId, vendorId),
+      FOREIGN KEY(userId) REFERENCES vendor_users(id) ON DELETE CASCADE,
+      FOREIGN KEY(vendorId) REFERENCES vendors(id) ON DELETE CASCADE
+    );
+    CREATE TABLE IF NOT EXISTS vendor_profiles (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      vendorId INTEGER NOT NULL UNIQUE,
+      slug TEXT NOT NULL UNIQUE,
+      displayName TEXT NOT NULL,
+      headline TEXT DEFAULT '',
+      bio TEXT DEFAULT '',
+      location TEXT DEFAULT '',
+      website TEXT DEFAULT '',
+      avatarUrl TEXT DEFAULT '',
+      coverImageUrl TEXT DEFAULT '',
+      visibility TEXT NOT NULL DEFAULT 'public',
+      createdAt TEXT NOT NULL,
+      updatedAt TEXT NOT NULL,
+      FOREIGN KEY(vendorId) REFERENCES vendors(id) ON DELETE CASCADE
+    );
+    CREATE TABLE IF NOT EXISTS services (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      vendorId INTEGER NOT NULL,
+      title TEXT NOT NULL,
+      description TEXT DEFAULT '',
+      priceCents INTEGER NOT NULL DEFAULT 0,
+      isActive INTEGER NOT NULL DEFAULT 1,
+      createdAt TEXT NOT NULL,
+      updatedAt TEXT NOT NULL,
+      FOREIGN KEY(vendorId) REFERENCES vendors(id) ON DELETE CASCADE
+    );
+    CREATE TABLE IF NOT EXISTS packages (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      vendorId INTEGER NOT NULL,
+      title TEXT NOT NULL,
+      description TEXT DEFAULT '',
+      priceCents INTEGER NOT NULL DEFAULT 0,
+      isActive INTEGER NOT NULL DEFAULT 1,
+      createdAt TEXT NOT NULL,
+      updatedAt TEXT NOT NULL,
+      FOREIGN KEY(vendorId) REFERENCES vendors(id) ON DELETE CASCADE
+    );
+    CREATE TABLE IF NOT EXISTS package_items (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      packageId INTEGER NOT NULL,
+      title TEXT NOT NULL,
+      description TEXT DEFAULT '',
+      quantity INTEGER NOT NULL DEFAULT 1,
+      createdAt TEXT NOT NULL,
+      FOREIGN KEY(packageId) REFERENCES packages(id) ON DELETE CASCADE
+    );
+    CREATE TABLE IF NOT EXISTS bookings (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      vendorId INTEGER NOT NULL,
+      customerName TEXT NOT NULL,
+      customerEmail TEXT NOT NULL,
+      eventDate TEXT NOT NULL,
+      packageId INTEGER,
+      status TEXT NOT NULL DEFAULT 'pending',
+      createdAt TEXT NOT NULL,
+      FOREIGN KEY(vendorId) REFERENCES vendors(id) ON DELETE CASCADE,
+      FOREIGN KEY(packageId) REFERENCES packages(id) ON DELETE SET NULL
+    );
   `)
 
   return db

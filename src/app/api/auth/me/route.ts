@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { jwtVerify } from 'jose'
-import { findVendorUserByEmail } from '@/lib/repositories/vendorUserRepository'
 
 export const runtime = 'nodejs'
 
