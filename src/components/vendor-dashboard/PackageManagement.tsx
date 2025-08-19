@@ -10,7 +10,8 @@ import {
   XMarkIcon,
   CurrencyDollarIcon,
   EyeIcon,
-  EyeSlashIcon
+  EyeSlashIcon,
+  CubeIcon
 } from '@heroicons/react/24/outline'
 
 interface Package {
@@ -265,7 +266,7 @@ export default function PackageManagement() {
       <div className="space-y-4">
         {packages.length === 0 ? (
           <div className="text-center py-12">
-            <PackageIcon className="mx-auto h-12 w-12 text-gray-400" />
+            <CubeIcon className="mx-auto h-12 w-12 text-gray-400" />
             <h3 className="mt-2 text-sm font-medium text-gray-900">No packages yet</h3>
             <p className="mt-1 text-sm text-gray-500">Get started by creating your first service package.</p>
             <div className="mt-6">

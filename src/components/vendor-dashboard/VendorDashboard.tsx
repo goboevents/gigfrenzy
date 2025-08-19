@@ -4,7 +4,7 @@ import { Builder } from '@builder.io/react'
 import { useState } from 'react'
 import { 
   UserIcon, 
-  PackageIcon, 
+  CubeIcon, 
   CalendarIcon, 
   ChartBarIcon,
   CogIcon,
@@ -31,7 +31,7 @@ export default function VendorDashboard({
 
   const tabs = [
     { id: 'profile', name: 'Profile', icon: UserIcon, component: ProfileManagement },
-    { id: 'packages', name: 'Packages & Pricing', icon: PackageIcon, component: PackageManagement },
+    { id: 'packages', name: 'Packages & Pricing', icon: CubeIcon, component: PackageManagement },
     { id: 'bookings', name: 'Bookings', icon: CalendarIcon, component: BookingManagement },
     { id: 'analytics', name: 'Analytics', icon: ChartBarIcon, component: Analytics },
     { id: 'settings', name: 'Settings', icon: CogIcon, component: Settings }

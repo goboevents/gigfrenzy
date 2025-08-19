@@ -1,0 +1,7 @@
+export { default as VendorProfile } from './VendorProfile'
+export { default as BookNowCTA } from './BookNowCTA'
+export { default as AboutSection } from './sections/AboutSection'
+export { default as ServicesSection } from './sections/ServicesSection'
+export { default as ServiceAreasSection } from './sections/ServiceAreasSection'
+export { default as OffersSection } from './sections/OffersSection'
+export { default as ReviewsSection } from './sections/ReviewsSection'
