@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getVendorBySlug } from '@/lib/repositories/vendorProfileRepository'
+import { getVendorProfileBySlug } from '@/lib/repositories/vendorProfileRepository'
 import { getActiveVendorServices } from '@/lib/repositories/vendorServiceRepository'
 
 export const runtime = 'nodejs'
@@ -12,7 +12,7 @@ export async function GET(
     const { slug } = params
     
     // Get vendor profile by slug
-    const vendorProfile = getVendorBySlug(slug)
+    const vendorProfile = getVendorProfileBySlug(slug)
     if (!vendorProfile) {
       return NextResponse.json({ error: 'Vendor not found' }, { status: 404 })
     }
