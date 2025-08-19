@@ -2,6 +2,7 @@
 
 import { builder } from '@builder.io/sdk'
 import { BUILDER_API_KEY, BUILDER_MODEL } from '../../builder-config'
+import type { BuilderContent } from '@builder.io/sdk'
 import BuilderPage from './BuilderPage'
 import { useEffect, useState } from 'react'
 
@@ -12,7 +13,7 @@ interface DynamicPageProps {
 }
 
 export default function DynamicPage({ params }: DynamicPageProps) {
-  const [content, setContent] = useState<any>(null)
+  const [content, setContent] = useState<BuilderContent | null>(null)
   const [loading, setLoading] = useState(true)
   const urlPath = '/' + (params.page || []).join('/')
 
@@ -30,7 +31,7 @@ export default function DynamicPage({ params }: DynamicPageProps) {
         if (builderContent) {
           setContent(builderContent)
         }
-      } catch (error) {
+      } catch {
         console.log('No Builder.io content found for path:', urlPath)
       } finally {
         setLoading(false)

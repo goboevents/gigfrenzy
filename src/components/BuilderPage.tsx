@@ -1,18 +1,18 @@
 'use client'
 
 import { BuilderComponent } from '@builder.io/react'
+import type { BuilderContent } from '@builder.io/sdk'
 import { useEffect, useState } from 'react'
 import { BUILDER_MODEL } from '../../builder-config'
 
 interface BuilderPageProps {
-  content?: any
+  content?: BuilderContent | null
   model?: string
 }
 
 export default function BuilderPage({ content, model = BUILDER_MODEL }: BuilderPageProps) {
-  const [builderContent, setBuilderContent] = useState<any>(null)
+  const [builderContent, setBuilderContent] = useState<BuilderContent | null>(null)
   const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     if (content) {
@@ -32,14 +32,6 @@ export default function BuilderPage({ content, model = BUILDER_MODEL }: BuilderP
     )
   }
 
-  if (error) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-red-500">Error: {error}</div>
-      </div>
-    )
-  }
-
   if (!builderContent) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -52,7 +44,7 @@ export default function BuilderPage({ content, model = BUILDER_MODEL }: BuilderP
     <div>
       <BuilderComponent
         model={model}
-        content={builderContent}
+        content={builderContent ?? undefined}
       />
     </div>
   )

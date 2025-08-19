@@ -1,45 +1,32 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { vendorCreateInputSchema } from '@/lib/schema'
+import { createVendor } from '@/lib/repositories/vendorRepository'
+
+export const runtime = 'nodejs'
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    
-    // Validate required fields
-    const { businessName, contactName, email, businessType } = body
-    
-    if (!businessName || !contactName || !email || !businessType) {
+    const result = vendorCreateInputSchema.safeParse(body)
+
+    if (!result.success) {
       return NextResponse.json(
-        { error: 'Missing required fields' },
+        { error: 'Invalid input', issues: result.error.flatten() },
         { status: 400 }
       )
     }
 
-    // In a real application, you would:
-    // 1. Validate the data
-    // 2. Save to database
-    // 3. Send confirmation emails
-    // 4. Log the submission
-    
-    console.log('Vendor signup received:', body)
+    const vendor = createVendor(result.data)
 
-    // Return success response
-    return NextResponse.json({
-      message: 'Vendor application submitted successfully',
-      vendor: {
-        id: Date.now(), // Temporary ID
-        businessName,
-        contactName,
-        email,
-        phone: body.phone || '',
-        businessType,
-        description: body.description || '',
-        submittedAt: new Date().toISOString()
-      }
-    })
-    
+    return NextResponse.json(
+      {
+        message: 'Vendor application submitted successfully',
+        vendor,
+      },
+      { status: 201 }
+    )
   } catch (error) {
     console.error('Error processing vendor signup:', error)
-    
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
