@@ -149,6 +149,42 @@ function initializeDatabase(filePath: string): Database.Database {
       createdAt TEXT NOT NULL,
       FOREIGN KEY(packageId) REFERENCES packages(id) ON DELETE CASCADE
     );
+    -- Enhanced customer booking system
+    CREATE TABLE IF NOT EXISTS customer_bookings (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      vendorId INTEGER NOT NULL,
+      customerName TEXT NOT NULL,
+      customerEmail TEXT NOT NULL,
+      customerPhone TEXT,
+      eventDate TEXT NOT NULL,
+      eventTime TEXT NOT NULL,
+      eventType TEXT NOT NULL,
+      guestCount INTEGER,
+      venueAddress TEXT,
+      specialRequirements TEXT,
+      serviceId INTEGER,
+      packageId INTEGER,
+      totalPriceCents INTEGER NOT NULL,
+      depositAmountCents INTEGER NOT NULL,
+      status TEXT NOT NULL DEFAULT 'pending',
+      paymentStatus TEXT NOT NULL DEFAULT 'pending',
+      createdAt TEXT NOT NULL,
+      updatedAt TEXT NOT NULL,
+      FOREIGN KEY(vendorId) REFERENCES vendors(id) ON DELETE CASCADE,
+      FOREIGN KEY(serviceId) REFERENCES vendor_services(id) ON DELETE SET NULL,
+      FOREIGN KEY(packageId) REFERENCES vendor_services(id) ON DELETE SET NULL
+    );
+
+    CREATE TABLE IF NOT EXISTS booking_messages (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      bookingId INTEGER NOT NULL,
+      senderType TEXT NOT NULL,
+      message TEXT NOT NULL,
+      createdAt TEXT NOT NULL,
+      FOREIGN KEY(bookingId) REFERENCES customer_bookings(id) ON DELETE CASCADE
+    );
+
+    -- Legacy bookings table (keeping for backward compatibility)
     CREATE TABLE IF NOT EXISTS bookings (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       vendorId INTEGER NOT NULL,

@@ -168,3 +168,6 @@ export const onboardingDataSchema = z.object({
 
 export type OnboardingData = z.infer<typeof onboardingDataSchema>
 
+// Re-export booking schemas for convenience
+export * from './schemas/booking'
+
