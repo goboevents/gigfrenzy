@@ -2,9 +2,12 @@
 
 import { useState } from 'react'
 import { CalendarIcon, PhoneIcon, GlobeAltIcon, StarIcon } from '@heroicons/react/24/outline'
+import Link from 'next/link'
+import BookingWidget from '@/components/booking/BookingWidget'
 
 interface Vendor {
   id: string
+  slug?: string
   displayName: string
   phone: string
   website: string
@@ -66,12 +69,19 @@ export default function BookNowCTA({ vendor }: BookNowCTAProps) {
 
             {/* Book Now Button */}
             <div className="flex items-center space-x-3">
-              <button
-                onClick={() => setShowBookingModal(true)}
+              <Link
+                href={`/booking/${vendor.slug || vendor.id}`}
                 className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-lg text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200 shadow-lg hover:shadow-xl"
               >
                 <CalendarIcon className="h-5 w-5 mr-2" />
                 Book Now
+              </Link>
+              
+              <button
+                onClick={() => setShowBookingModal(true)}
+                className="inline-flex items-center px-4 py-3 border border-gray-300 text-base font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200"
+              >
+                Quick Contact
               </button>
             </div>
           </div>
