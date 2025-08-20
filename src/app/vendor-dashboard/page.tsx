@@ -2,12 +2,15 @@
 
 import { Builder } from '@builder.io/react'
 import VendorDashboard from '../../components/vendor-dashboard/VendorDashboard'
+import ProtectedRoute from '../../components/auth/ProtectedRoute'
 
 export default function VendorDashboardPage() {
   return (
-    <div className="min-h-screen bg-gray-50">
-      <VendorDashboard />
-    </div>
+    <ProtectedRoute requiredRole="vendor">
+      <div className="min-h-screen bg-gray-50">
+        <VendorDashboard />
+      </div>
+    </ProtectedRoute>
   )
 }
 

@@ -9,6 +9,7 @@ import LocationAvailabilityStep from '../../components/onboarding/steps/Location
 import DocumentationStep from '../../components/onboarding/steps/DocumentationStep'
 import PricingPackagesStep from '../../components/onboarding/steps/PricingPackagesStep'
 import ReviewSubmitStep from '../../components/onboarding/steps/ReviewSubmitStep'
+import ProtectedRoute from '../../components/auth/ProtectedRoute'
 
 // Define the onboarding steps
 const onboardingSteps = [
@@ -65,18 +66,20 @@ const onboardingSteps = [
 
 export default function VendorOnboarding() {
   return (
-    <div className="min-h-screen bg-gray-50">
-      <OnboardingContainer
-        title="Complete Your Vendor Profile"
-        subtitle="Join our platform and start offering your services to customers"
-        steps={onboardingSteps}
-        showProgressBar={true}
-        allowStepNavigation={true}
-        backgroundColor="#f9fafb"
-        textColor="#1f2937"
-        accentColor="#3b82f6"
-      />
-    </div>
+    <ProtectedRoute requiredRole="vendor">
+      <div className="min-h-screen bg-gray-50">
+        <OnboardingContainer
+          title="Complete Your Vendor Profile"
+          subtitle="Join our platform and start offering your services to customers"
+          steps={onboardingSteps}
+          showProgressBar={true}
+          allowStepNavigation={true}
+          backgroundColor="#f9fafb"
+          textColor="#1f2937"
+          accentColor="#3b82f6"
+        />
+      </div>
+    </ProtectedRoute>
   )
 }
 

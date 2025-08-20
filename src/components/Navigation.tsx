@@ -3,7 +3,7 @@
 import { Builder } from '@builder.io/react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { 
   HomeIcon,
   UserGroupIcon,
@@ -13,6 +13,7 @@ import {
   UserIcon,
   ArrowRightOnRectangleIcon
 } from '@heroicons/react/24/outline'
+import { useAuth } from '../hooks/useAuth'
 
 interface NavigationProps {
   title?: string
@@ -20,37 +21,12 @@ interface NavigationProps {
 
 export default function Navigation({ title = 'GigFrenzy' }: NavigationProps) {
   const pathname = usePathname()
-  const [isAuthenticated, setIsAuthenticated] = useState(false)
-  const [userName, setUserName] = useState('')
+  const { isAuthenticated, user } = useAuth()
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
-
-  useEffect(() => {
-    // Check if user is authenticated by looking for auth token
-    const checkAuth = async () => {
-      try {
-        const response = await fetch('/api/auth/me')
-        if (response.ok) {
-          const userData = await response.json()
-          setIsAuthenticated(true)
-          setUserName(userData.name || 'Vendor')
-        } else {
-          setIsAuthenticated(false)
-          setUserName('')
-        }
-      } catch (error) {
-        setIsAuthenticated(false)
-        setUserName('')
-      }
-    }
-
-    checkAuth()
-  }, [])
 
   const handleLogout = async () => {
     try {
       await fetch('/api/auth/logout', { method: 'POST' })
-      setIsAuthenticated(false)
-      setUserName('')
       window.location.href = '/'
     } catch (error) {
       console.error('Logout failed:', error)
@@ -110,7 +86,7 @@ export default function Navigation({ title = 'GigFrenzy' }: NavigationProps) {
             {isAuthenticated ? (
               <div className="flex items-center space-x-3">
                 <span className="text-sm text-gray-700 bg-gray-100 px-3 py-1 rounded-full">
-                  Welcome, {userName}
+                  Welcome, {user?.name || 'Vendor'}
                 </span>
                 <button
                   onClick={handleLogout}
@@ -181,7 +157,7 @@ export default function Navigation({ title = 'GigFrenzy' }: NavigationProps) {
               {isAuthenticated ? (
                 <div className="space-y-2">
                   <div className="px-4 py-2 text-sm text-gray-700 bg-gray-100 rounded-lg">
-                    Welcome, {userName}
+                    Welcome, {user?.name || 'Vendor'}
                   </div>
                   <button
                     onClick={() => {
