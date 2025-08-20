@@ -106,16 +106,16 @@ export default function VendorSignupForm({
   if (isSubmitted) {
     return (
       <div 
-        className="min-h-[400px] flex items-center justify-center p-8 rounded-lg"
+        className="min-h-[400px] flex items-center justify-center p-8 rounded-2xl shadow-lg"
         style={{ backgroundColor, color: textColor }}
       >
         <div className="text-center">
-          <div className="text-6xl mb-4">✅</div>
-          <h2 className="text-2xl font-bold mb-4">Application Submitted!</h2>
-          <p className="text-lg mb-6">{successMessage}</p>
+          <div className="text-6xl mb-6 animate-bounce">✅</div>
+          <h2 className="text-3xl font-bold mb-4 text-green-600">Application Submitted!</h2>
+          <p className="text-lg mb-8 opacity-80">{successMessage}</p>
           <button
             onClick={() => setIsSubmitted(false)}
-            className="px-6 py-3 rounded-lg font-semibold transition-colors"
+            className="px-8 py-3 rounded-xl font-semibold transition-all duration-200 hover:shadow-lg transform hover:-translate-y-1"
             style={{ backgroundColor: buttonColor, color: '#ffffff' }}
           >
             Submit Another Application
@@ -127,19 +127,21 @@ export default function VendorSignupForm({
 
   return (
     <div 
-      className="min-h-[400px] p-8 rounded-lg"
+      className="min-h-[400px] p-8 rounded-2xl shadow-lg border border-gray-100"
       style={{ backgroundColor, color: textColor }}
     >
       <div className="max-w-2xl mx-auto">
-        <div className="text-center mb-8">
-          <h2 className="text-3xl font-bold mb-4">{title}</h2>
-          <p className="text-lg opacity-80">{subtitle}</p>
+        <div className="text-center mb-10">
+          <h2 className="text-4xl font-bold mb-4 bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+            {title}
+          </h2>
+          <p className="text-xl opacity-80 leading-relaxed">{subtitle}</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {formFields.businessName && (
-            <div>
-              <label className="block text-sm font-medium mb-2">
+            <div className="space-y-2">
+              <label className="block text-sm font-semibold text-gray-700">
                 Business Name *
               </label>
               <input
@@ -147,15 +149,15 @@ export default function VendorSignupForm({
                 required
                 value={formData.businessName}
                 onChange={(e) => handleInputChange('businessName', e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 hover:border-gray-400"
                 placeholder="Enter your business name"
               />
             </div>
           )}
 
           {formFields.contactName && (
-            <div>
-              <label className="block text-sm font-medium mb-2">
+            <div className="space-y-2">
+              <label className="block text-sm font-semibold text-gray-700">
                 Contact Person *
               </label>
               <input
@@ -163,15 +165,15 @@ export default function VendorSignupForm({
                 required
                 value={formData.contactName}
                 onChange={(e) => handleInputChange('contactName', e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 hover:border-gray-400"
                 placeholder="Enter contact person's name"
               />
             </div>
           )}
 
           {formFields.email && (
-            <div>
-              <label className="block text-sm font-medium mb-2">
+            <div className="space-y-2">
+              <label className="block text-sm font-semibold text-gray-700">
                 Email Address *
               </label>
               <input
@@ -179,37 +181,37 @@ export default function VendorSignupForm({
                 required
                 value={formData.email}
                 onChange={(e) => handleInputChange('email', e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 hover:border-gray-400"
                 placeholder="Enter your email address"
               />
             </div>
           )}
 
           {formFields.phone && (
-            <div>
-              <label className="block text-sm font-medium mb-2">
+            <div className="space-y-2">
+              <label className="block text-sm font-semibold text-gray-700">
                 Phone Number
               </label>
               <input
                 type="tel"
                 value={formData.phone}
                 onChange={(e) => handleInputChange('phone', e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 hover:border-gray-400"
                 placeholder="Enter your phone number"
               />
             </div>
           )}
 
           {formFields.businessType && (
-            <div>
-              <label className="block text-sm font-medium mb-2">
+            <div className="space-y-2">
+              <label className="block text-sm font-semibold text-gray-700">
                 Business Type *
               </label>
               <select
                 required
                 value={formData.businessType}
                 onChange={(e) => handleInputChange('businessType', e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 hover:border-gray-400 bg-white"
               >
                 <option value="">Select business type</option>
                 {businessTypeOptions.map((option) => (
@@ -222,48 +224,55 @@ export default function VendorSignupForm({
           )}
 
           {formFields.website && (
-            <div>
-              <label className="block text-sm font-medium mb-2">
+            <div className="space-y-2">
+              <label className="block text-sm font-semibold text-gray-700">
                 Website
               </label>
               <input
                 type="url"
                 value={formData.website}
                 onChange={(e) => handleInputChange('website', e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 hover:border-gray-400"
                 placeholder="https://yourwebsite.com"
               />
             </div>
           )}
 
           {formFields.description && (
-            <div>
-              <label className="block text-sm font-medium mb-2">
+            <div className="space-y-2">
+              <label className="block text-sm font-semibold text-gray-700">
                 Business Description
               </label>
               <textarea
                 value={formData.description}
                 onChange={(e) => handleInputChange('description', e.target.value)}
                 rows={4}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 hover:border-gray-400 resize-none"
                 placeholder="Tell us about your business and services..."
               />
             </div>
           )}
 
           {error && (
-            <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
-              <p className="text-red-600">{error}</p>
+            <div className="p-4 bg-red-50 border border-red-200 rounded-xl">
+              <p className="text-red-600 font-medium">{error}</p>
             </div>
           )}
 
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full py-3 px-6 rounded-lg font-semibold text-white transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed hover:opacity-90"
+            className="w-full py-4 px-6 rounded-xl font-semibold text-white transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-lg transform hover:-translate-y-1 disabled:transform-none"
             style={{ backgroundColor: buttonColor }}
           >
-            {isSubmitting ? 'Submitting...' : submitButtonText}
+            {isSubmitting ? (
+              <div className="flex items-center justify-center">
+                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+                Submitting...
+              </div>
+            ) : (
+              submitButtonText
+            )}
           </button>
         </form>
       </div>
