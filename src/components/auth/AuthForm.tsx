@@ -11,6 +11,9 @@ export function AuthForm() {
   const [businessName, setBusinessName] = useState('')
   const [businessType, setBusinessType] = useState('')
   const [contactName, setContactName] = useState('')
+  const [phone, setPhone] = useState('')
+  const [website, setWebsite] = useState('')
+  const [description, setDescription] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
@@ -25,11 +28,31 @@ export function AuthForm() {
 
     try {
       if (isSignUp) {
-        const { error } = await signUp(email, password, name)
+        const userData = {
+          name,
+          businessName,
+          businessType,
+          contactName,
+          phone,
+          website,
+          description
+        }
+        
+        const { error } = await signUp(email, password, userData)
         if (error) {
           setError(error.message || 'Failed to create account')
         } else {
           setSuccess('Account created successfully! Please check your email to verify your account.')
+          // Clear form on success
+          setEmail('')
+          setPassword('')
+          setName('')
+          setBusinessName('')
+          setBusinessType('')
+          setContactName('')
+          setPhone('')
+          setWebsite('')
+          setDescription('')
         }
       } else {
         const { error } = await signIn(email, password)
@@ -37,6 +60,9 @@ export function AuthForm() {
           setError(error.message || 'Failed to sign in')
         } else {
           setSuccess('Signed in successfully!')
+          // Clear form on success
+          setEmail('')
+          setPassword('')
         }
       }
     } catch (err) {
@@ -127,6 +153,46 @@ export function AuthForm() {
                 value={contactName}
                 onChange={(e) => setContactName(e.target.value)}
                 required
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+              />
+            </div>
+
+            <div>
+              <label htmlFor="phone" className="block text-sm font-medium text-gray-700">
+                Phone Number
+              </label>
+              <input
+                type="tel"
+                id="phone"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+              />
+            </div>
+
+            <div>
+              <label htmlFor="website" className="block text-sm font-medium text-gray-700">
+                Website (optional)
+              </label>
+              <input
+                type="url"
+                id="website"
+                value={website}
+                onChange={(e) => setWebsite(e.target.value)}
+                placeholder="https://example.com"
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+              />
+            </div>
+
+            <div>
+              <label htmlFor="description" className="block text-sm font-medium text-gray-700">
+                Business Description (optional)
+              </label>
+              <textarea
+                id="description"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                rows={3}
                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
               />
             </div>

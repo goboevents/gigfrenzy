@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createServiceRoleClient } from '@/lib/supabase'
-import bcrypt from 'bcryptjs'
 
 export async function POST(request: NextRequest) {
   try {
@@ -23,30 +22,7 @@ export async function POST(request: NextRequest) {
 
     const supabase = createServiceRoleClient()
 
-    // Hash password
-    const passwordHash = await bcrypt.hash(password, 12)
-
-    // Create vendor user
-    const { data: userData, error: userError } = await supabase
-      .from('vendor_users')
-      .insert({
-        email,
-        password_hash: passwordHash,
-        name,
-        role: 'vendor'
-      })
-      .select()
-      .single()
-
-    if (userError) {
-      console.error('Error creating user:', userError)
-      return NextResponse.json(
-        { error: 'Failed to create user account' },
-        { status: 500 }
-      )
-    }
-
-    // Create vendor record
+    // Create vendor record first
     const { data: vendorData, error: vendorError } = await supabase
       .from('vendors')
       .insert({
@@ -63,10 +39,34 @@ export async function POST(request: NextRequest) {
 
     if (vendorError) {
       console.error('Error creating vendor:', vendorError)
-      // Clean up user if vendor creation fails
-      await supabase.from('vendor_users').delete().eq('id', userData.id)
       return NextResponse.json(
         { error: 'Failed to create vendor profile' },
+        { status: 500 }
+      )
+    }
+
+    // Create user account using Supabase Auth
+    const { data: authData, error: authError } = await supabase.auth.admin.createUser({
+      email,
+      password,
+      email_confirm: true, // Auto-confirm email for development
+      user_metadata: {
+        name,
+        business_name: businessName,
+        business_type: businessType,
+        contact_name: contactName,
+        phone: phone || null,
+        website: website || null,
+        description: description || null
+      }
+    })
+
+    if (authError) {
+      console.error('Error creating user:', authError)
+      // Clean up vendor if user creation fails
+      await supabase.from('vendors').delete().eq('id', vendorData.id)
+      return NextResponse.json(
+        { error: 'Failed to create user account' },
         { status: 500 }
       )
     }
@@ -75,14 +75,14 @@ export async function POST(request: NextRequest) {
     const { error: linkError } = await supabase
       .from('vendor_user_vendors')
       .insert({
-        user_id: userData.id,
+        user_id: authData.user.id,
         vendor_id: vendorData.id
       })
 
     if (linkError) {
       console.error('Error linking user to vendor:', linkError)
       // Clean up if linking fails
-      await supabase.from('vendor_users').delete().eq('id', userData.id)
+      await supabase.auth.admin.deleteUser(authData.user.id)
       await supabase.from('vendors').delete().eq('id', vendorData.id)
       return NextResponse.json(
         { error: 'Failed to link user account' },
@@ -93,10 +93,9 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       message: 'Account created successfully',
       user: {
-        id: userData.id,
-        email: userData.email,
-        name: userData.name,
-        role: userData.role
+        id: authData.user.id,
+        email: authData.user.email,
+        name: name
       },
       vendor: {
         id: vendorData.id,

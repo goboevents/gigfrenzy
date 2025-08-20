@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createServiceRoleClient } from '@/lib/supabase'
-import bcrypt from 'bcryptjs'
 
 export async function POST(request: NextRequest) {
   try {
@@ -16,23 +15,13 @@ export async function POST(request: NextRequest) {
 
     const supabase = createServiceRoleClient()
 
-    // Get user by email
-    const { data: user, error: userError } = await supabase
-      .from('vendor_users')
-      .select('*')
-      .eq('email', email)
-      .single()
+    // Authenticate user using Supabase Auth
+    const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
+      email,
+      password
+    })
 
-    if (userError || !user) {
-      return NextResponse.json(
-        { error: 'Invalid email or password' },
-        { status: 401 }
-      )
-    }
-
-    // Verify password
-    const isValidPassword = await bcrypt.compare(password, user.password_hash)
-    if (!isValidPassword) {
+    if (authError || !authData.user) {
       return NextResponse.json(
         { error: 'Invalid email or password' },
         { status: 401 }
@@ -43,7 +32,7 @@ export async function POST(request: NextRequest) {
     const { data: vendorLink, error: linkError } = await supabase
       .from('vendor_user_vendors')
       .select('vendor_id')
-      .eq('user_id', user.id)
+      .eq('user_id', authData.user.id)
       .single()
 
     if (linkError || !vendorLink) {
@@ -66,15 +55,12 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Create a session token (you might want to use Supabase Auth instead)
-    // For now, we'll return the user data
     return NextResponse.json({
       message: 'Login successful',
       user: {
-        id: user.id,
-        email: user.email,
-        name: user.name,
-        role: user.role
+        id: authData.user.id,
+        email: authData.user.email,
+        name: authData.user.user_metadata?.name || 'Unknown'
       },
       vendor: {
         id: vendor.id,
@@ -82,7 +68,8 @@ export async function POST(request: NextRequest) {
         contactName: vendor.contact_name,
         email: vendor.email,
         businessType: vendor.business_type
-      }
+      },
+      session: authData.session
     })
 
   } catch (error) {

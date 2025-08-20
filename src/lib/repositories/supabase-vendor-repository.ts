@@ -1,4 +1,5 @@
-import { createClientComponentClient, createServerComponentClient } from '@/lib/supabase'
+import { createClientComponentClient } from '@/lib/supabase'
+import { createServerComponentClient } from '@/lib/supabase-server'
 import type { Database } from '@/lib/supabase'
 
 type Vendor = Database['public']['Tables']['vendors']['Row']
@@ -116,9 +117,18 @@ export class SupabaseServerVendorRepository {
     this.supabase = createServerComponentClient()
   }
 
+  // Initialize the client
+  private async getClient() {
+    if (this.supabase instanceof Promise) {
+      return await this.supabase
+    }
+    return this.supabase
+  }
+
   // Same methods as above but using server client
   async create(vendorData: VendorInsert): Promise<{ data: Vendor | null; error: any }> {
-    const { data, error } = await this.supabase
+    const supabase = await this.getClient()
+    const { data, error } = await supabase
       .from('vendors')
       .insert(vendorData)
       .select()
@@ -128,7 +138,8 @@ export class SupabaseServerVendorRepository {
   }
 
   async getById(id: number): Promise<{ data: Vendor | null; error: any }> {
-    const { data, error } = await this.supabase
+    const supabase = await this.getClient()
+    const { data, error } = await supabase
       .from('vendors')
       .select('*')
       .eq('id', id)
@@ -138,7 +149,8 @@ export class SupabaseServerVendorRepository {
   }
 
   async getByEmail(email: string): Promise<{ data: Vendor | null; error: any }> {
-    const { data, error } = await this.supabase
+    const supabase = await this.getClient()
+    const { data, error } = await supabase
       .from('vendors')
       .select('*')
       .eq('email', email)
@@ -148,7 +160,8 @@ export class SupabaseServerVendorRepository {
   }
 
   async update(id: number, updates: VendorUpdate): Promise<{ data: Vendor | null; error: any }> {
-    const { data, error } = await this.supabase
+    const supabase = await this.getClient()
+    const { data, error } = await supabase
       .from('vendors')
       .update(updates)
       .eq('id', id)
@@ -159,7 +172,8 @@ export class SupabaseServerVendorRepository {
   }
 
   async delete(id: number): Promise<{ error: any }> {
-    const { error } = await this.supabase
+    const supabase = await this.getClient()
+    const { error } = await supabase
       .from('vendors')
       .delete()
       .eq('id', id)
@@ -171,7 +185,8 @@ export class SupabaseServerVendorRepository {
     const from = (page - 1) * limit
     const to = from + limit - 1
 
-    const { data, error, count } = await this.supabase
+    const supabase = await this.getClient()
+    const { data, error, count } = await supabase
       .from('vendors')
       .select('*', { count: 'exact' })
       .range(from, to)
