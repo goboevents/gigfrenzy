@@ -87,6 +87,13 @@ export default function DateTimeSelectionStep({
 
   const handleNext = () => {
     if (selectedDate && startTime && endTime && eventDuration > 0) {
+      // Ensure all data is properly set before proceeding
+      onUpdate({
+        eventDate: selectedDate,
+        startTime,
+        endTime,
+        eventDuration,
+      })
       onNext()
     }
   }

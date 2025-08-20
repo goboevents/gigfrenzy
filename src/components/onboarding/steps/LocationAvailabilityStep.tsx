@@ -59,7 +59,7 @@ export default function LocationAvailabilityStep({
   const handleServiceAreaAdd = () => {
     if (newServiceArea.city && newServiceArea.state) {
       const areaExists = formData.serviceAreas.some(
-        area => area.city === newServiceArea.city && area.state === newServiceArea.state
+        (area: ServiceArea) => area.city === newServiceArea.city && area.state === newServiceArea.state
       )
       
       if (!areaExists) {
@@ -75,7 +75,7 @@ export default function LocationAvailabilityStep({
   const handleServiceAreaRemove = (index: number) => {
     setFormData(prev => ({
       ...prev,
-      serviceAreas: prev.serviceAreas.filter((_, i) => i !== index)
+      serviceAreas: prev.serviceAreas.filter((_: ServiceArea, i: number) => i !== index)
     }))
   }
 
@@ -119,7 +119,7 @@ export default function LocationAvailabilityStep({
       newErrors.serviceAreas = 'At least one service area is required'
     }
 
-    const hasAvailableDays = Object.values(formData.availability).some(day => day.available)
+    const hasAvailableDays = Object.values(formData.availability).some((day: any) => day.available)
     if (!hasAvailableDays) {
       newErrors.availability = 'At least one day must be available'
     }
@@ -241,7 +241,7 @@ export default function LocationAvailabilityStep({
 
           {formData.serviceAreas.length > 0 && (
             <div className="space-y-2">
-              {formData.serviceAreas.map((area, index) => (
+              {formData.serviceAreas.map((area: ServiceArea, index: number) => (
                 <div key={index} className="flex items-center justify-between p-3 bg-white border border-gray-200 rounded-lg">
                   <span className="text-gray-700">
                     {area.city}, {area.state} (within {area.radius} miles)
@@ -268,7 +268,7 @@ export default function LocationAvailabilityStep({
         <div>
           <h3 className="text-lg font-semibold mb-4">Weekly Availability Schedule</h3>
           <div className="space-y-4">
-            {Object.entries(formData.availability).map(([day, schedule]) => (
+            {Object.entries(formData.availability).map(([day, schedule]: [string, any]) => (
               <div key={day} className="flex items-center space-x-4 p-4 border border-gray-200 rounded-lg">
                 <div className="flex items-center space-x-3">
                   <input

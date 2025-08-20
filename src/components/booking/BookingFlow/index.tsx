@@ -111,9 +111,17 @@ export default function BookingFlow({
       setLoading(true)
       setError(null)
 
+      console.log('Submitting booking with data:', bookingData)
+      console.log('Vendor data:', localVendorData)
+
+      // Ensure vendor ID is available
+      if (!localVendorData?.vendor?.id) {
+        throw new Error('Vendor information not available')
+      }
+
       // Prepare booking data
       const bookingPayload = {
-        vendorId: localVendorData?.vendor?.id,
+        vendorId: localVendorData.vendor.id,
         customerName: bookingData.customerName,
         customerEmail: bookingData.customerEmail,
         customerPhone: bookingData.customerPhone,
@@ -130,6 +138,8 @@ export default function BookingFlow({
         totalPriceCents: bookingData.totalPriceCents,
         depositAmountCents: bookingData.depositAmountCents,
       }
+
+      console.log('Booking payload:', bookingPayload)
 
       const response = await fetch('/api/booking', {
         method: 'POST',

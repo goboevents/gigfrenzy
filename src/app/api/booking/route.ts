@@ -7,9 +7,12 @@ export const runtime = 'nodejs'
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
+    console.log('Received booking request body:', body)
+    
     const result = customerBookingCreateSchema.safeParse(body)
 
     if (!result.success) {
+      console.log('Validation failed:', result.error.flatten())
       return NextResponse.json(
         { 
           error: 'Invalid input', 
@@ -19,6 +22,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    console.log('Validated booking data:', result.data)
     const booking = await bookingRepository.createCustomerBooking(result.data)
 
     return NextResponse.json(

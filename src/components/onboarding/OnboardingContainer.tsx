@@ -36,7 +36,7 @@ export default function OnboardingContainer({
   vendorId
 }: OnboardingContainerProps) {
   const [currentStep, setCurrentStep] = useState(0)
-  const [onboardingData, setOnboardingData] = useState({})
+  const [onboardingData, setOnboardingData] = useState<Record<string, any>>({})
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   // Load existing onboarding data if vendorId is provided

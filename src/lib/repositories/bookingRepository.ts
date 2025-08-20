@@ -84,12 +84,14 @@ export class BookingRepository {
   async createCustomerBooking(input: CustomerBookingCreateInput): Promise<CustomerBookingResponse> {
     const now = new Date().toISOString()
     
+    console.log('Creating booking with input:', input)
+    
     const stmt = this.db.prepare(`
       INSERT INTO customer_bookings (
-        vendorId, customerName, customerEmail, customerPhone, eventDate, eventTime, startTime, endTime, eventDuration,
+        vendorId, customerName, customerEmail, customerPhone, eventDate, startTime, endTime, eventDuration,
         eventType, guestCount, venueAddress, specialRequirements, serviceId, packageId,
         totalPriceCents, depositAmountCents, status, paymentStatus, createdAt, updatedAt
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `)
 
     const insertResult = stmt.run(
@@ -98,7 +100,6 @@ export class BookingRepository {
       input.customerEmail,
       input.customerPhone || null,
       input.eventDate,
-      input.startTime, // eventTime (for backward compatibility)
       input.startTime,
       input.endTime,
       input.eventDuration,
@@ -115,6 +116,8 @@ export class BookingRepository {
       now,
       now
     )
+    
+    console.log('Insert result:', insertResult)
 
     const bookingId = insertResult.lastInsertRowid as number
     
@@ -146,7 +149,7 @@ export class BookingRepository {
       endTime: row.endTime,
       eventDuration: row.eventDuration,
       eventType: row.eventType as any,
-      guestCount: row.guestCount || undefined,
+      guestCount: row.guestCount || 1,
       venueAddress: row.venueAddress || undefined,
       specialRequirements: row.specialRequirements || undefined,
       serviceId: row.serviceId || undefined,
@@ -313,7 +316,7 @@ export class BookingRepository {
       endTime: row.endTime,
       eventDuration: row.eventDuration,
       eventType: row.eventType as EventType,
-      guestCount: row.guestCount || undefined,
+      guestCount: row.guestCount || 1,
       venueAddress: row.venueAddress || undefined,
       specialRequirements: row.specialRequirements || undefined,
       serviceId: row.serviceId || undefined,

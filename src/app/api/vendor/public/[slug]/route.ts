@@ -41,10 +41,10 @@ interface AvailabilityRow {
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { slug: string } }
+  { params }: { params: Promise<{ slug: string }> }
 ) {
   try {
-    const { slug } = params
+    const { slug } = await params
     const { searchParams } = new URL(request.url)
     const isBookingOptions = searchParams.get('type') === 'booking-options'
     
@@ -180,7 +180,7 @@ export async function GET(
       return NextResponse.json({
         message: 'Booking options retrieved successfully',
         vendor: {
-          id: vendor.id,
+          id: Number(vendor.id),
           businessName: vendor.businessName,
           displayName: vendorProfile.displayName,
           headline: vendorProfile.headline,

@@ -82,7 +82,7 @@ export default function ReviewSubmitStep({
                 <span className="font-medium text-gray-700 capitalize">
                   {key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}
                 </span>
-                <span className="text-gray-900">{displayValue}</span>
+                <span className="text-gray-900">{String(displayValue)}</span>
               </div>
             )
           })}

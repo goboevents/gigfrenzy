@@ -160,7 +160,13 @@ export default function ServiceSelectionStep({
   }
 
   const handleNext = () => {
-    if (selectedServiceId) {
+    if (selectedServiceId && selectedService) {
+      // Ensure the selected service data is properly set
+      onUpdate({
+        serviceId: selectedService.type === 'package' ? undefined : selectedServiceId,
+        packageId: selectedService.type === 'package' ? selectedServiceId : undefined,
+        selectedService,
+      })
       onNext()
     }
   }

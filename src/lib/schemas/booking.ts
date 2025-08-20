@@ -39,7 +39,7 @@ export const customerBookingCreateSchema = z.object({
   endTime: z.string().regex(/^\d{2}:\d{2}$/, 'End time must be in HH:MM format'),
   eventDuration: z.number().positive('Event duration must be positive'),
   eventType: eventTypeSchema,
-  guestCount: z.number().int().min(1, 'Guest count must be at least 1').optional(),
+  guestCount: z.number().int().min(1, 'Guest count must be at least 1'),
   venueAddress: z.string().optional(),
   specialRequirements: z.string().max(1000, 'Requirements too long').optional(),
   serviceId: z.number().int().positive().optional(),

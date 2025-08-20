@@ -3,8 +3,6 @@
 import { Builder } from '@builder.io/react'
 import { useState, useEffect } from 'react'
 import { 
-  TrendingUpIcon,
-  TrendingDownIcon,
   CurrencyDollarIcon,
   CalendarIcon,
   UserGroupIcon,
@@ -66,7 +64,7 @@ export default function Analytics() {
           monthlyRevenue: [
             { month: 'Jan', amount: 40000 },
             { month: 'Feb', amount: 60000 },
-            { month: 'Mar', count: 80000 },
+            { month: 'Mar', amount: 80000 },
             { month: 'Apr', amount: 100000 },
             { month: 'May', amount: 120000 },
             { month: 'Jun', amount: 80000 }

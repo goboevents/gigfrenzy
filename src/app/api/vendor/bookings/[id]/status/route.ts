@@ -10,7 +10,7 @@ export const runtime = 'nodejs'
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const auth = await requireAuthUser()
@@ -30,7 +30,8 @@ export async function PUT(
     }
 
     const { status } = result.data
-    const bookingId = parseInt(params.id)
+    const { id } = await params
+    const bookingId = parseInt(id)
 
     // This would need to be implemented in the booking repository
     // For now, return a success response

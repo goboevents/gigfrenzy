@@ -19,19 +19,46 @@ const demoVendor = {
       id: '1',
       title: 'Residential Deep Cleaning',
       description: 'Comprehensive deep cleaning service for homes, including kitchen, bathrooms, living areas, and bedrooms. Perfect for move-in/move-out or seasonal cleaning.',
-      priceCents: 15000
+      priceCents: 15000,
+      type: 'service',
+      duration: 'per event',
+      features: ['Deep cleaning', 'Eco-friendly products', 'Move-in/move-out', 'Seasonal cleaning'],
+      isPopular: true,
+      pricingModel: 'fixed',
+      hourlyRate: 0,
+      depositRequired: true,
+      depositPercentage: 25,
+      cancellationPolicy: '24-hour notice required'
     },
     {
       id: '2',
       title: 'Commercial Office Cleaning',
       description: 'Regular office cleaning services including dusting, vacuuming, sanitizing, and trash removal. Available daily, weekly, or monthly.',
-      priceCents: 25000
+      priceCents: 25000,
+      type: 'service',
+      duration: 'per event',
+      features: ['Dusting', 'Vacuuming', 'Sanitizing', 'Trash removal'],
+      isPopular: false,
+      pricingModel: 'fixed',
+      hourlyRate: 0,
+      depositRequired: true,
+      depositPercentage: 25,
+      cancellationPolicy: '24-hour notice required'
     },
     {
       id: '3',
       title: 'Carpet & Upholstery Cleaning',
       description: 'Professional deep cleaning for carpets, rugs, and upholstered furniture using eco-friendly cleaning solutions.',
-      priceCents: 8000
+      priceCents: 8000,
+      type: 'service',
+      duration: 'per event',
+      features: ['Deep cleaning', 'Eco-friendly solutions', 'Carpet cleaning', 'Upholstery cleaning'],
+      isPopular: false,
+      pricingModel: 'fixed',
+      hourlyRate: 0,
+      depositRequired: true,
+      depositPercentage: 25,
+      cancellationPolicy: '24-hour notice required'
     }
   ],
   serviceAreas: [
