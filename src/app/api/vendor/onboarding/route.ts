@@ -7,17 +7,17 @@ export const runtime = 'nodejs'
 export async function GET(request: NextRequest) {
   try {
     const auth = await requireAuthUser()
-    const vendorId = getVendorIdForUser(auth.userId)
+    const vendorId = await getVendorIdForUser(auth.userId)
     if (!vendorId) return NextResponse.json({ error: 'No vendor linked' }, { status: 404 })
     
     const { searchParams } = new URL(request.url)
     const step = searchParams.get('step')
     
     if (step) {
-      const stepData = getOnboardingStep(vendorId, step)
+      const stepData = await getOnboardingStep(vendorId, step)
       return NextResponse.json({ stepData })
     } else {
-      const onboardingData = getAllOnboardingData(vendorId)
+      const onboardingData = await getAllOnboardingData(vendorId)
       return NextResponse.json({ onboardingData })
     }
   } catch (e) {
@@ -31,7 +31,7 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const auth = await requireAuthUser()
-    const vendorId = getVendorIdForUser(auth.userId)
+    const vendorId = await getVendorIdForUser(auth.userId)
     if (!vendorId) return NextResponse.json({ error: 'No vendor linked' }, { status: 404 })
     
     const body = await request.json()
@@ -41,7 +41,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Step and data are required' }, { status: 400 })
     }
     
-    const record = saveOnboardingStep(vendorId, step, data)
+    const record = await saveOnboardingStep(vendorId, step, data)
     return NextResponse.json({ success: true, record })
   } catch (e) {
     if ((e as Error).message === 'UNAUTHORIZED') {

@@ -1,48 +1,92 @@
-import { getDatabase } from '@/lib/db'
+import { createClient } from '@supabase/supabase-js'
 import type { OnboardingData } from '@/lib/schema'
 
 export type VendorOnboardingRecord = {
   id: number
-  vendorId: number
+  vendor_id: number
   step: string
   data: string
-  isComplete: number
-  createdAt: string
-  updatedAt: string
+  is_complete: boolean
+  created_at: string
+  updated_at: string
 }
 
-export function saveOnboardingStep(vendorId: number, step: string, data: any): VendorOnboardingRecord {
-  const db = getDatabase()
+// Create Supabase client
+function createSupabaseClient() {
+  return createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  )
+}
+
+export async function saveOnboardingStep(vendorId: number, step: string, data: any): Promise<VendorOnboardingRecord> {
+  const supabase = createSupabaseClient()
   const now = new Date().toISOString()
   
   // Check if step already exists
-  const existing = db.prepare('SELECT * FROM vendor_onboarding WHERE vendorId = ? AND step = ?').get(vendorId, step) as VendorOnboardingRecord | null
+  const { data: existing, error: selectError } = await supabase
+    .from('vendor_onboarding')
+    .select('*')
+    .eq('vendor_id', vendorId)
+    .eq('step', step)
+    .single()
+  
+  if (selectError && selectError.code !== 'PGRST116') {
+    throw new Error(`Error checking existing step: ${selectError.message}`)
+  }
   
   if (existing) {
     // Update existing step
-    const info = db.prepare(`
-      UPDATE vendor_onboarding SET 
-        data = ?, isComplete = ?, updatedAt = ? 
-      WHERE id = ?
-    `).run(JSON.stringify(data), 1, now, existing.id)
+    const { data: updated, error: updateError } = await supabase
+      .from('vendor_onboarding')
+      .update({
+        data: JSON.stringify(data),
+        is_complete: true,
+        updated_at: now
+      })
+      .eq('id', existing.id)
+      .select()
+      .single()
     
-    return db.prepare('SELECT * FROM vendor_onboarding WHERE id = ?').get(existing.id) as VendorOnboardingRecord
+    if (updateError) {
+      throw new Error(`Error updating step: ${updateError.message}`)
+    }
+    
+    return updated
   } else {
     // Create new step
-    const info = db.prepare(`
-      INSERT INTO vendor_onboarding (vendorId, step, data, isComplete, createdAt, updatedAt) 
-      VALUES (?, ?, ?, ?, ?, ?)
-    `).run(vendorId, step, JSON.stringify(data), 1, now, now)
+    const { data: created, error: insertError } = await supabase
+      .from('vendor_onboarding')
+      .insert({
+        vendor_id: vendorId,
+        step,
+        data: JSON.stringify(data),
+        is_complete: true,
+        created_at: now,
+        updated_at: now
+      })
+      .select()
+      .single()
     
-    return db.prepare('SELECT * FROM vendor_onboarding WHERE id = ?').get(Number(info.lastInsertRowid)) as VendorOnboardingRecord
+    if (insertError) {
+      throw new Error(`Error creating step: ${insertError.message}`)
+    }
+    
+    return created
   }
 }
 
-export function getOnboardingStep(vendorId: number, step: string): any | null {
-  const db = getDatabase()
-  const record = db.prepare('SELECT * FROM vendor_onboarding WHERE vendorId = ? AND step = ?').get(vendorId, step) as VendorOnboardingRecord | null
+export async function getOnboardingStep(vendorId: number, step: string): Promise<any | null> {
+  const supabase = createSupabaseClient()
   
-  if (!record) return null
+  const { data: record, error } = await supabase
+    .from('vendor_onboarding')
+    .select('*')
+    .eq('vendor_id', vendorId)
+    .eq('step', step)
+    .single()
+  
+  if (error || !record) return null
   
   try {
     return JSON.parse(record.data)
@@ -51,13 +95,22 @@ export function getOnboardingStep(vendorId: number, step: string): any | null {
   }
 }
 
-export function getAllOnboardingData(vendorId: number): OnboardingData {
-  const db = getDatabase()
-  const records = db.prepare('SELECT * FROM vendor_onboarding WHERE vendorId = ?').all(vendorId) as VendorOnboardingRecord[]
+export async function getAllOnboardingData(vendorId: number): Promise<OnboardingData> {
+  const supabase = createSupabaseClient()
+  
+  const { data: records, error } = await supabase
+    .from('vendor_onboarding')
+    .select('*')
+    .eq('vendor_id', vendorId)
+  
+  if (error) {
+    console.error('Error fetching onboarding data:', error)
+    return {}
+  }
   
   const onboardingData: OnboardingData = {}
   
-  records.forEach(record => {
+  records?.forEach(record => {
     try {
       const stepData = JSON.parse(record.data)
       switch (record.step) {
@@ -91,16 +144,38 @@ export function getAllOnboardingData(vendorId: number): OnboardingData {
   return onboardingData
 }
 
-export function isOnboardingComplete(vendorId: number): boolean {
-  const db = getDatabase()
-  const records = db.prepare('SELECT COUNT(*) as count FROM vendor_onboarding WHERE vendorId = ? AND isComplete = 1').get(vendorId) as { count: number }
-  return records.count >= 7 // All 7 steps must be complete
+export async function isOnboardingComplete(vendorId: number): Promise<boolean> {
+  const supabase = createSupabaseClient()
+  
+  const { count, error } = await supabase
+    .from('vendor_onboarding')
+    .select('*', { count: 'exact', head: true })
+    .eq('vendor_id', vendorId)
+    .eq('is_complete', true)
+  
+  if (error) {
+    console.error('Error checking onboarding completion:', error)
+    return false
+  }
+  
+  return (count || 0) >= 7 // All 7 steps must be complete
 }
 
-export function getOnboardingProgress(vendorId: number): { completed: number; total: number; percentage: number } {
-  const db = getDatabase()
-  const records = db.prepare('SELECT COUNT(*) as count FROM vendor_onboarding WHERE vendorId = ? AND isComplete = 1').get(vendorId) as { count: number }
-  const completed = records.count
+export async function getOnboardingProgress(vendorId: number): Promise<{ completed: number; total: number; percentage: number }> {
+  const supabase = createSupabaseClient()
+  
+  const { count, error } = await supabase
+    .from('vendor_onboarding')
+    .select('*', { count: 'exact', head: true })
+    .eq('vendor_id', vendorId)
+    .eq('is_complete', true)
+  
+  if (error) {
+    console.error('Error getting onboarding progress:', error)
+    return { completed: 0, total: 7, percentage: 0 }
+  }
+  
+  const completed = count || 0
   const total = 7
   const percentage = Math.round((completed / total) * 100)
   
