@@ -4,12 +4,18 @@ import { getActiveVendorServices, parseFeatures } from '@/lib/repositories/vendo
 
 export const runtime = 'nodejs'
 
+interface RouteParams {
+  params: Promise<{
+    slug: string
+  }>
+}
+
 export async function GET(
   request: NextRequest,
-  { params }: { params: { slug: string } }
+  { params }: RouteParams
 ) {
   try {
-    const { slug } = params
+    const { slug } = await params
 
     if (!slug) {
       return NextResponse.json({ error: 'Slug is required' }, { status: 400 })

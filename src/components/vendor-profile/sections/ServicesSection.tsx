@@ -1,7 +1,7 @@
 import { CurrencyDollarIcon, ClockIcon, CheckCircleIcon, TagIcon, StarIcon } from '@heroicons/react/24/outline'
 
 interface VendorService {
-  id: string
+  id: string | number
   title: string
   description: string
   priceCents: number
@@ -10,7 +10,7 @@ interface VendorService {
   features: string[]
   isPopular: boolean
   pricingModel: string
-  hourlyRate: number
+  hourlyRate: number | null
   depositRequired: boolean
   depositPercentage: number
   cancellationPolicy: string

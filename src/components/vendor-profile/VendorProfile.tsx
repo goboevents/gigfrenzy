@@ -18,22 +18,7 @@ import ServicesSection from './sections/ServicesSection'
 import ServiceAreasSection from './sections/ServiceAreasSection'
 import OffersSection from './sections/OffersSection'
 import ReviewsSection from './sections/ReviewsSection'
-
-interface VendorService {
-  id: string
-  title: string
-  description: string
-  priceCents: number
-  type: string
-  duration: string
-  features: string[]
-  isPopular: boolean
-  pricingModel: string
-  hourlyRate: number
-  depositRequired: boolean
-  depositPercentage: number
-  cancellationPolicy: string
-}
+import type { VendorServiceRecord } from '@/lib/repositories/vendorServiceRepository'
 
 interface Vendor {
   id: string
@@ -44,11 +29,25 @@ interface Vendor {
   location: string
   website: string
   phone: string
-  avatarUrl: string
-  coverImageUrl: string
+  avatarUrl: string | null
+  coverImageUrl: string | null
   rating: number
   reviewCount: number
-  services: VendorService[]
+  services: Array<{
+    id: string | number
+    title: string
+    description: string
+    priceCents: number
+    type: string
+    duration: string
+    features: string[]
+    isPopular: boolean
+    pricingModel: string
+    hourlyRate: number | null
+    depositRequired: boolean
+    depositPercentage: number
+    cancellationPolicy: string
+  }>
   serviceAreas: Array<{
     id: string
     city: string
@@ -85,7 +84,7 @@ const tabs = [
 
 export default function VendorProfile({ vendor }: VendorProfileProps) {
   const [activeTab, setActiveTab] = useState('about')
-  const [services, setServices] = useState<VendorService[]>(vendor.services || [])
+  const [services, setServices] = useState(vendor.services || [])
   const [isLoadingServices, setIsLoadingServices] = useState(false)
 
   // Fetch services from the API if not provided
