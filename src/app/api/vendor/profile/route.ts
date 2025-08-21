@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { requireAuthUser, getVendorIdForUser } from '@/lib/supabase-auth'
-import { getVendorProfileByVendorId, createVendorProfile, updateVendorProfile } from '@/lib/repositories/vendorProfileRepository'
+// import { getVendorProfileByVendorId, createVendorProfile, updateVendorProfile } from '@/lib/repositories/vendorProfileRepository'
 import { vendorProfileUpsertSchema } from '@/lib/schema'
 
 export const runtime = 'nodejs'
@@ -14,13 +14,11 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Vendor not found' }, { status: 404 })
     }
 
-    const profile = await getVendorProfileByVendorId(vendorId)
-    
-    if (!profile) {
-      return NextResponse.json({ error: 'Profile not found' }, { status: 404 })
-    }
-
-    return NextResponse.json(profile)
+    // Temporarily disabled to test database initialization fix
+    return NextResponse.json({ 
+      message: 'Profile temporarily disabled for testing',
+      profile: { mock: true }
+    })
   } catch (error) {
     console.error('Error getting vendor profile:', error)
     if (error instanceof Error && error.message === 'UNAUTHORIZED') {

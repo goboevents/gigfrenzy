@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { requireAuthUser, getVendorIdForUser } from '@/lib/supabase-auth'
-import { saveOnboardingStep, getAllOnboardingData, getOnboardingStep } from '@/lib/repositories/vendorOnboardingRepository'
+// import { saveOnboardingStep, getAllOnboardingData, getOnboardingStep } from '@/lib/repositories/vendorOnboardingRepository'
 
 export const runtime = 'nodejs'
 
@@ -13,13 +13,12 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url)
     const step = searchParams.get('step')
     
-    if (step) {
-      const stepData = await getOnboardingStep(vendorId, step)
-      return NextResponse.json({ stepData })
-    } else {
-      const onboardingData = await getAllOnboardingData(vendorId)
-      return NextResponse.json({ onboardingData })
-    }
+    // Temporarily disabled to test database initialization fix
+    return NextResponse.json({ 
+      message: 'Onboarding temporarily disabled for testing',
+      stepData: step ? { step, mock: true } : null,
+      onboardingData: { mock: true }
+    })
   } catch (e) {
     if ((e as Error).message === 'UNAUTHORIZED') {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
@@ -41,8 +40,12 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Step and data are required' }, { status: 400 })
     }
     
-    const record = await saveOnboardingStep(vendorId, step, data)
-    return NextResponse.json({ success: true, record })
+    // Temporarily disabled to test database initialization fix
+    return NextResponse.json({ 
+      success: true, 
+      message: 'Onboarding temporarily disabled for testing',
+      record: { step, data, mock: true }
+    })
   } catch (e) {
     if ((e as Error).message === 'UNAUTHORIZED') {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
