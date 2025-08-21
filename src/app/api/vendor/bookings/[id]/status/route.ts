@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { requireAuthUser, getVendorIdForUser } from '@/lib/auth'
+import { requireAuthUser, getVendorIdForUser } from '@/lib/supabase-auth'
 import { z } from 'zod'
 
 const updateStatusSchema = z.object({

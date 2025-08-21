@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { requireAuthUser, getVendorIdForUser } from '@/lib/auth'
+import { requireAuthUser, getVendorIdForUser } from '@/lib/supabase-auth'
 import { createPackage, deletePackage, listPackages, updatePackage } from '@/lib/repositories/packageRepository'
 import { packageCreateSchema, packageUpdateSchema } from '@/lib/schema'
 

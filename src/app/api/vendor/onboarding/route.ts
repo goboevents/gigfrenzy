@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { requireAuthUser, getVendorIdForUser } from '@/lib/auth'
+import { requireAuthUser, getVendorIdForUser } from '@/lib/supabase-auth'
 import { saveOnboardingStep, getAllOnboardingData, getOnboardingStep } from '@/lib/repositories/vendorOnboardingRepository'
 
 export const runtime = 'nodejs'
