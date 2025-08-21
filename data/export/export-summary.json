@@ -1,0 +1,14 @@
+{
+  "exportDate": "2025-08-20T21:27:56.900Z",
+  "tables": {
+    "vendors": 1,
+    "vendor_profiles": 1,
+    "vendor_services": 5,
+    "vendor_service_areas": 2,
+    "vendor_availability": 1,
+    "vendor_users": 1,
+    "bookings": 0,
+    "packages": 0,
+    "services": 0
+  }
+}

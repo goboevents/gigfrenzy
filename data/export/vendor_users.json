@@ -1,0 +1,10 @@
+[
+  {
+    "id": 1,
+    "email": "dj@mixmasterpro.com",
+    "passwordHash": "$2a$10$64ieM/J9t6.nipnvWEP4LuTjqRQ7Zav7KXwklyQdzJaFj144m.9BO",
+    "name": "John Smith",
+    "role": "vendor",
+    "createdAt": "2025-08-20T01:25:56.705Z"
+  }
+]

@@ -1,0 +1,20 @@
+[
+  {
+    "id": 1,
+    "vendorId": 1,
+    "city": "Los Angeles",
+    "state": "CA",
+    "zipCode": "90210",
+    "radius": 25,
+    "createdAt": "2025-08-20T01:25:56.860Z"
+  },
+  {
+    "id": 2,
+    "vendorId": 1,
+    "city": "Orange County",
+    "state": "CA",
+    "zipCode": "92614",
+    "radius": 25,
+    "createdAt": "2025-08-20T01:25:56.861Z"
+  }
+]

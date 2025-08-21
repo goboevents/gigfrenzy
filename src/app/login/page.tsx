@@ -1,9 +1,10 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { EnvelopeIcon, LockClosedIcon, ArrowRightIcon } from '@heroicons/react/24/outline'
+import { useAuthActions, useSupabaseAuth } from '@/hooks/useSupabaseAuth'
 
 export default function LoginPage() {
   const [email, setEmail] = useState('')
@@ -11,6 +12,16 @@ export default function LoginPage() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const router = useRouter()
+  const { signIn } = useAuthActions()
+  const { isAuthenticated, user } = useSupabaseAuth()
+
+  // Redirect when authentication state changes
+  useEffect(() => {
+    if (isAuthenticated && user) {
+      console.log('🔄 Authentication state updated, redirecting...')
+      router.push('/vendor-dashboard')
+    }
+  }, [isAuthenticated, user, router])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -23,25 +34,31 @@ export default function LoginPage() {
     setIsSubmitting(true)
     setError(null)
 
-    try {
-      const response = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password }),
-      })
+    console.log('🚀 Login form submitted:', { email, password })
 
-      if (response.ok) {
-        const data = await response.json()
-        console.log('Login successful:', data)
-        // Redirect to vendor dashboard
-        router.push('/vendor-dashboard')
+    try {
+      console.log('📤 Calling signIn function...')
+      const { data, error: signInError } = await signIn(email, password)
+
+      console.log('📥 SignIn response:', { data, error: signInError })
+
+      if (signInError) {
+        console.error('❌ SignIn error:', signInError)
+        setError(signInError.message || 'Login failed. Please check your credentials.')
+        return
+      }
+
+      if (data?.user) {
+        console.log('✅ Login successful:', data.user)
+        console.log('⏳ Waiting for authentication state to update...')
+        // Don't redirect here - let the useEffect handle it
+        // router.push('/vendor-dashboard')
       } else {
-        const errorData = await response.json()
-        setError(errorData.error || 'Login failed. Please check your credentials.')
+        console.error('❌ No user data returned')
+        setError('Login failed. Please check your credentials.')
       }
     } catch (err) {
+      console.error('❌ Login error:', err)
       setError('Something went wrong. Please try again.')
     } finally {
       setIsSubmitting(false)
@@ -163,6 +180,15 @@ export default function LoginPage() {
               <span className="font-semibold text-gray-700">Test Account:</span><br />
               <span className="font-mono text-blue-600">dj@mixmasterpro.com</span> / <span className="font-mono text-blue-600">password123</span>
             </p>
+            <button
+              onClick={() => {
+                console.log('🧪 Testing router...')
+                router.push('/vendor-dashboard')
+              }}
+              className="mt-2 px-4 py-2 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700"
+            >
+              Test Router
+            </button>
           </div>
         </div>
       </div>

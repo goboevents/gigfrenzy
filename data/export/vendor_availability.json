@@ -1,0 +1,17 @@
+[
+  {
+    "id": 1,
+    "vendorId": 1,
+    "monday": 1,
+    "tuesday": 1,
+    "wednesday": 1,
+    "thursday": 1,
+    "friday": 1,
+    "saturday": 1,
+    "sunday": 1,
+    "startTime": "09:00",
+    "endTime": "02:00",
+    "createdAt": "2025-08-20T01:25:56.861Z",
+    "updatedAt": "2025-08-20T01:25:56.861Z"
+  }
+]

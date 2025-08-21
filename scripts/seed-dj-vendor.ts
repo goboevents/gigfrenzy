@@ -19,7 +19,7 @@ async function seedDJVendor() {
     
     // 1. Create the vendor
     console.log('🏢 Creating vendor...')
-    const vendor = createVendor({
+    const vendor = await createVendor({
       businessName: 'DJ MixMaster Pro',
       contactName: 'John Smith',
       email: 'dj@mixmasterpro.com',
@@ -50,7 +50,7 @@ async function seedDJVendor() {
     
     // 4. Create vendor profile
     console.log('📋 Creating vendor profile...')
-    const profile = upsertVendorProfile(vendor.id, {
+    const profile = await upsertVendorProfile(vendor.id, {
       slug: 'dj-mixmaster-pro',
       displayName: 'DJ MixMaster Pro',
       headline: 'Professional DJ Services for Unforgettable Events',
@@ -66,7 +66,7 @@ async function seedDJVendor() {
     // 5. Create services and packages
     console.log('🎵 Creating services and packages...')
     
-    const basicPackage = createVendorService(vendor.id, {
+    const basicPackage = await createVendorService({
       title: 'Basic DJ Package',
       description: 'Perfect for small events and parties. Includes professional sound system, 4 hours of DJ service, and basic lighting.',
       priceCents: 50000, // $500
@@ -86,10 +86,10 @@ async function seedDJVendor() {
       depositRequired: true,
       depositPercentage: 25,
       cancellationPolicy: 'Full refund if cancelled 7+ days before event. 50% refund if cancelled 3-6 days before event.'
-    })
+    }, vendor.id)
     console.log(`✅ Basic package created: ${basicPackage.title}`)
     
-    const premiumPackage = createVendorService(vendor.id, {
+    const premiumPackage = await createVendorService({
       title: 'Premium DJ Package',
       description: 'Our most popular package for medium-sized events. Includes enhanced sound system, 6 hours of service, professional lighting, and MC services.',
       priceCents: 80000, // $800
@@ -111,10 +111,10 @@ async function seedDJVendor() {
       depositRequired: true,
       depositPercentage: 25,
       cancellationPolicy: 'Full refund if cancelled 7+ days before event. 50% refund if cancelled 3-6 days before event.'
-    })
+    }, vendor.id)
     console.log(`✅ Premium package created: ${premiumPackage.title}`)
     
-    const weddingPackage = createVendorService(vendor.id, {
+    const weddingPackage = await createVendorService({
       title: 'Wedding DJ Package',
       description: 'Complete wedding entertainment solution. Includes ceremony music, cocktail hour, reception, and all-day coordination.',
       priceCents: 120000, // $1200
@@ -139,10 +139,10 @@ async function seedDJVendor() {
       depositRequired: true,
       depositPercentage: 30,
       cancellationPolicy: 'Full refund if cancelled 14+ days before event. 75% refund if cancelled 7-13 days before event.'
-    })
+    }, vendor.id)
     console.log(`✅ Wedding package created: ${weddingPackage.title}`)
     
-    const hourlyService = createVendorService(vendor.id, {
+    const hourlyService = await createVendorService({
       title: 'Hourly DJ Service',
       description: 'Flexible hourly rate for custom event needs. Perfect for events that don\'t fit standard packages.',
       priceCents: 15000, // $150
@@ -161,13 +161,13 @@ async function seedDJVendor() {
       depositRequired: true,
       depositPercentage: 25,
       cancellationPolicy: 'Full refund if cancelled 7+ days before event. 50% refund if cancelled 3-6 days before event.'
-    })
+    }, vendor.id)
     console.log(`✅ Hourly service created: ${hourlyService.title}`)
     
     // 6. Create service areas
     console.log('📍 Creating service areas...')
     
-    const laArea = createVendorServiceArea(
+    const laArea = await createVendorServiceArea(
       vendor.id,
       'Los Angeles',
       'CA',
@@ -176,7 +176,7 @@ async function seedDJVendor() {
     )
     console.log(`✅ Service area created: ${laArea.city}, ${laArea.state}`)
     
-    const ocArea = createVendorServiceArea(
+    const ocArea = await createVendorServiceArea(
       vendor.id,
       'Orange County',
       'CA',
@@ -188,7 +188,7 @@ async function seedDJVendor() {
     // 7. Create availability
     console.log('⏰ Setting up availability...')
     
-    const availability = createVendorAvailability(vendor.id, {
+    const availability = await createVendorAvailability(vendor.id, {
       monday: true,
       tuesday: true,
       wednesday: true,

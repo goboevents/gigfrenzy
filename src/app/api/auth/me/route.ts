@@ -1,26 +1,26 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { jwtVerify } from 'jose'
+import { getAuthUserFromRequest } from '@/lib/supabase-auth'
 
 export const runtime = 'nodejs'
 
-function getJwtSecret(): Uint8Array {
-  const secret = process.env.AUTH_SECRET || 'dev-insecure-secret-change-me'
-  return new TextEncoder().encode(secret)
-}
-
 export async function GET(request: NextRequest) {
   try {
-    const token = request.cookies.get('auth_token')?.value
-    if (!token) return NextResponse.json({ authenticated: false }, { status: 200 })
+    const authUser = await getAuthUserFromRequest()
+    
+    if (!authUser) {
+      return NextResponse.json({ authenticated: false }, { status: 401 })
+    }
 
-    const { payload } = await jwtVerify(token, getJwtSecret())
-    const userId = Number(payload.sub)
-    if (!Number.isFinite(userId)) return NextResponse.json({ authenticated: false }, { status: 200 })
-
-    // Minimal response; use a real user fetch if needed later
-    return NextResponse.json({ authenticated: true, userId, role: payload.role })
-  } catch {
-    return NextResponse.json({ authenticated: false }, { status: 200 })
+    return NextResponse.json({
+      authenticated: true,
+      userId: authUser.userId,
+      role: authUser.role,
+      name: authUser.name,
+      email: authUser.email
+    })
+  } catch (e) {
+    console.error('Auth check error', e)
+    return NextResponse.json({ authenticated: false }, { status: 401 })
   }
 }
 

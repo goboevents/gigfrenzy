@@ -1,0 +1,13 @@
+[
+  {
+    "id": 1,
+    "businessName": "DJ MixMaster Pro",
+    "contactName": "John Smith",
+    "email": "dj@mixmasterpro.com",
+    "phone": "+1-555-0123",
+    "businessType": "DJ Services",
+    "website": "https://mixmasterpro.com",
+    "description": "Professional DJ services for all events - weddings, corporate events, parties, and more. 10+ years of experience creating amazing atmospheres with the latest music and professional equipment.",
+    "createdAt": "2025-08-20T01:25:56.679Z"
+  }
+]

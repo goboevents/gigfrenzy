@@ -1,27 +1,50 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { vendorUserCreateSchema } from '@/lib/schema'
-import { createVendorUser, findVendorUserByEmail } from '@/lib/repositories/vendorUserRepository'
+import { signUpVendorUser } from '@/lib/supabase-auth'
 
 export const runtime = 'nodejs'
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json()
-    const parsed = vendorUserCreateSchema.safeParse(body)
-    if (!parsed.success) {
-      return NextResponse.json({ error: 'Invalid input', issues: parsed.error.flatten() }, { status: 400 })
+    const { email, password, name, businessName, contactName, businessType, phone, website, description } = await request.json()
+    
+    if (!email || !password || !name || !businessName || !contactName || !businessType) {
+      return NextResponse.json({ 
+        error: 'Missing required fields: email, password, name, businessName, contactName, businessType' 
+      }, { status: 400 })
     }
 
-    const exists = findVendorUserByEmail(parsed.data.email)
-    if (exists) {
-      return NextResponse.json({ error: 'Email already in use' }, { status: 409 })
+    const userData = {
+      name,
+      businessName,
+      contactName,
+      businessType,
+      phone: phone || '',
+      website: website || '',
+      description: description || ''
     }
 
-    const user = await createVendorUser(parsed.data)
+    const { user, error } = await signUpVendorUser(email, password, userData)
+    
+    if (error) {
+      return NextResponse.json({ error: error.message || 'Registration failed' }, { status: 400 })
+    }
 
-    return NextResponse.json({ id: user.id, email: user.email, name: user.name, role: user.role }, { status: 201 })
+    if (!user) {
+      return NextResponse.json({ error: 'User creation failed' }, { status: 500 })
+    }
+
+    // Return success response
+    return NextResponse.json({ 
+      message: 'Registration successful. Please check your email to confirm your account.',
+      user: {
+        id: user.id,
+        email: user.email,
+        name: user.user_metadata?.full_name || user.email,
+        role: 'vendor'
+      }
+    })
   } catch (e) {
-    console.error('Register error', e)
+    console.error('Registration error', e)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }

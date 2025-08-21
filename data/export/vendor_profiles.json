@@ -1,0 +1,17 @@
+[
+  {
+    "id": 1,
+    "vendorId": 1,
+    "slug": "dj-mixmaster",
+    "displayName": "DJ MixMaster Pro",
+    "headline": "Professional DJ Services for Unforgettable Events",
+    "bio": "With over 10 years of experience in the entertainment industry, DJ MixMaster Pro delivers exceptional music experiences for all types of events. From intimate weddings to large corporate functions, we ensure your event has the perfect soundtrack. We use professional-grade equipment and stay current with the latest music trends to keep your guests dancing all night long.",
+    "location": "Los Angeles, CA",
+    "website": "https://mixmasterpro.com",
+    "avatarUrl": "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400&h=400&fit=crop&crop=face",
+    "coverImageUrl": "https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=1200&h=400&fit=crop",
+    "visibility": "public",
+    "createdAt": "2025-08-20T01:25:56.858Z",
+    "updatedAt": "2025-08-20T02:28:48.180Z"
+  }
+]
