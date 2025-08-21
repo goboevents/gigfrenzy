@@ -77,14 +77,29 @@ export async function requireAuthUser(): Promise<AuthUser> {
 // Get vendor ID for user (replaces getVendorIdForUser)
 export async function getVendorIdForUser(userId: string): Promise<number | null> {
   try {
-    const supabase = createServerSupabaseClient()
+    // Use the user's authenticated session instead of service role key
+    const supabase = await createServerSupabaseClientFromCookies()
+    
+    // First verify the user is authenticated
+    const { data: { user }, error: authError } = await supabase.auth.getUser()
+    if (authError || !user || user.id !== userId) {
+      console.error('Auth error in getVendorIdForUser:', authError)
+      return null
+    }
+    
     const { data, error } = await supabase
       .from('vendor_user_vendors')
       .select('vendor_id')
       .eq('user_id', userId)
       .single()
     
-    if (error || !data) {
+    if (error) {
+      console.error('Database error in getVendorIdForUser:', error)
+      return null
+    }
+    
+    if (!data) {
+      console.log('No vendor link found for user:', userId)
       return null
     }
     
@@ -180,16 +195,28 @@ export async function signInVendorUser(email: string, password: string): Promise
     })
 
     if (error) {
+      console.error('Sign in error:', error)
       return { user: null, error }
     }
 
-    // Verify user is linked to a vendor
-    if (user) {
+    if (!user) {
+      console.error('No user returned from sign in')
+      return { user: null, error: { message: 'Authentication failed' } }
+    }
+
+    // Verify user is linked to a vendor using their authenticated session
+    try {
       const vendorId = await getVendorIdForUser(user.id)
       if (!vendorId) {
+        console.error('User not linked to any vendor:', user.id)
         await supabase.auth.signOut()
         return { user: null, error: { message: 'User not linked to any vendor' } }
       }
+      console.log('User successfully linked to vendor:', vendorId)
+    } catch (vendorCheckError) {
+      console.error('Error checking vendor link:', vendorCheckError)
+      await supabase.auth.signOut()
+      return { user: null, error: { message: 'Error verifying vendor account' } }
     }
 
     return { user, error: null }
