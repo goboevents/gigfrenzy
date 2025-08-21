@@ -1,15 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { findVendorUserByEmail } from '@/lib/repositories/vendorUserRepository'
-import bcrypt from 'bcryptjs'
-import { SignJWT } from 'jose'
+import { signInVendorUser } from '@/lib/supabase-auth'
 
 export const runtime = 'nodejs'
-
-const JWT_ALG = 'HS256'
-function getJwtSecret(): Uint8Array {
-  const secret = process.env.AUTH_SECRET || 'dev-insecure-secret-change-me'
-  return new TextEncoder().encode(secret)
-}
 
 export async function POST(request: NextRequest) {
   try {
@@ -18,31 +10,23 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Email and password are required' }, { status: 400 })
     }
 
-    const user = findVendorUserByEmail(email)
+    const { user, error } = await signInVendorUser(email, password)
+    
+    if (error) {
+      return NextResponse.json({ error: error.message || 'Invalid credentials' }, { status: 401 })
+    }
+
     if (!user) {
-      return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 })
+      return NextResponse.json({ error: 'Authentication failed' }, { status: 401 })
     }
 
-    const ok = await bcrypt.compare(password, user.passwordHash)
-    if (!ok) {
-      return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 })
-    }
-
-    const token = await new SignJWT({ sub: String(user.id), role: user.role })
-      .setProtectedHeader({ alg: JWT_ALG })
-      .setIssuedAt()
-      .setExpirationTime('7d')
-      .sign(getJwtSecret())
-
-    const res = NextResponse.json({ id: user.id, email: user.email, name: user.name, role: user.role })
-    res.cookies.set('auth_token', token, {
-      httpOnly: true,
-      sameSite: 'lax',
-      secure: process.env.NODE_ENV === 'production',
-      path: '/',
-      maxAge: 60 * 60 * 24 * 7, // 7 days
+    // Return user data (Supabase handles the session cookies automatically)
+    return NextResponse.json({ 
+      id: user.id, 
+      email: user.email, 
+      name: user.user_metadata?.full_name || user.email,
+      role: 'vendor' 
     })
-    return res
   } catch (e) {
     console.error('Login error', e)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })

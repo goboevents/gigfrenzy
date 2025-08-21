@@ -1,45 +1,47 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getVendorProfileBySlug } from '@/lib/repositories/vendorProfileRepository'
-import { getActiveVendorServices } from '@/lib/repositories/vendorServiceRepository'
+import { getActiveVendorServices, parseFeatures } from '@/lib/repositories/vendorServiceRepository'
 
 export const runtime = 'nodejs'
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: Promise<{ slug: string }> }
+  { params }: { params: { slug: string } }
 ) {
   try {
-    const { slug } = await params
-    
-    // Get vendor profile by slug
-    const vendorProfile = getVendorProfileBySlug(slug)
-    if (!vendorProfile) {
-      return NextResponse.json({ error: 'Vendor not found' }, { status: 404 })
+    const { slug } = params
+
+    if (!slug) {
+      return NextResponse.json({ error: 'Slug is required' }, { status: 400 })
     }
+
+    const vendorProfile = await getVendorProfileBySlug(slug)
     
-    // Get active services for this vendor
-    const services = getActiveVendorServices(vendorProfile.vendorId)
-    
-    // Transform services for public display
-    const publicServices = services.map(service => ({
-      id: service.id.toString(),
+    if (!vendorProfile) {
+      return NextResponse.json({ error: 'Vendor profile not found' }, { status: 404 })
+    }
+
+    const services = await getActiveVendorServices(vendorProfile.vendorId)
+    const parsedServices = services.map(service => ({
+      id: service.id,
       title: service.title,
       description: service.description,
       priceCents: service.priceCents,
       type: service.type,
       duration: service.duration,
-      features: service.features ? JSON.parse(service.features) : [],
-      isPopular: service.isPopular === 1,
+      features: parseFeatures(service.features),
+      isActive: Boolean(service.isActive),
+      isPopular: Boolean(service.isPopular),
       pricingModel: service.pricingModel,
       hourlyRate: service.hourlyRate,
-      depositRequired: service.depositRequired === 1,
+      depositRequired: Boolean(service.depositRequired),
       depositPercentage: service.depositPercentage,
       cancellationPolicy: service.cancellationPolicy
     }))
-    
-    return NextResponse.json({ services: publicServices })
-  } catch (e) {
-    console.error('Error fetching vendor services:', e)
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+
+    return NextResponse.json(parsedServices)
+  } catch (error) {
+    console.error('Error getting vendor public services:', error)
+    return NextResponse.json({ error: 'Failed to get vendor services' }, { status: 500 })
   }
 }

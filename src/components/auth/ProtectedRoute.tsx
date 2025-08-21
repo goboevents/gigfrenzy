@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { useAuth } from '../../hooks/useAuth'
+import { useSupabaseAuth } from '../../hooks/useSupabaseAuth'
 
 interface ProtectedRouteProps {
   children: React.ReactNode
@@ -15,7 +15,7 @@ export default function ProtectedRoute({
   requiredRole = 'vendor',
   redirectTo = '/login'
 }: ProtectedRouteProps) {
-  const { isAuthenticated, user, isLoading } = useAuth()
+  const { isAuthenticated, user, isLoading } = useSupabaseAuth()
   const router = useRouter()
 
   useEffect(() => {

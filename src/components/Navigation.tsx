@@ -13,7 +13,7 @@ import {
   UserIcon,
   ArrowRightOnRectangleIcon
 } from '@heroicons/react/24/outline'
-import { useAuth } from '../hooks/useAuth'
+import { useSupabaseAuth, useAuthActions } from '../hooks/useSupabaseAuth'
 
 interface NavigationProps {
   title?: string
@@ -21,15 +21,24 @@ interface NavigationProps {
 
 export default function Navigation({ title = 'GigFrenzy' }: NavigationProps) {
   const pathname = usePathname()
-  const { isAuthenticated, user } = useAuth()
+  const { isAuthenticated, user } = useSupabaseAuth()
+  const { signOut } = useAuthActions()
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
   const handleLogout = async () => {
     try {
-      await fetch('/api/auth/logout', { method: 'POST' })
+      await signOut()
+      // The auth state will automatically update through the hook
       window.location.href = '/'
     } catch (error) {
       console.error('Logout failed:', error)
+      // Fallback to API logout
+      try {
+        await fetch('/api/auth/logout', { method: 'POST' })
+        window.location.href = '/'
+      } catch (apiError) {
+        console.error('API logout also failed:', apiError)
+      }
     }
   }
 
