@@ -1,0 +1,22 @@
+{
+  "version": 1,
+  "selectionMode": "single",
+  "notes": "In v1, user selects event type + date/time first, then chooses a primary service. Once selected, primary service is locked for the session/draft and drives the subsequent customization UI.",
+  "primaryServices": [
+    {
+      "id": "dj",
+      "label": "DJ",
+      "description": "Professional DJ/MC service; user customizes styles/services/add-ons and receives an estimate subject to vendor confirmation."
+    },
+    {
+      "id": "karaoke",
+      "label": "Karaoke",
+      "description": "Karaoke as the primary experience; user selects karaoke services/equipment and add-ons with tiered estimate."
+    },
+    {
+      "id": "photo_booth",
+      "label": "Photo Booth",
+      "description": "Photo booth as the primary experience; user selects booth type(s), duration bundle(s), and timing per booth instance."
+    }
+  ]
+}

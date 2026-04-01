@@ -1,0 +1,32 @@
+{
+  "version": 1,
+  "selectionMode": "multi",
+  "notes": "DJ styles are multi-select. Service/capability-like items (e.g., Wedding DJ, Karaoke DJ, Silent Disco DJ, Cultural DJs, Gospel/Christian) are intentionally excluded for v1 and may be added later under a separate services/specialties taxonomy.",
+  "styles": [
+    {"id": "open_format", "label": "Open Format"},
+    {"id": "top40_pop", "label": "Top 40 / Pop"},
+    {"id": "hiphop_rap", "label": "Hip-Hop / Rap"},
+    {"id": "throwbacks", "label": "Throwbacks (80s, 90s, 2000s)"},
+    {"id": "dance_edm", "label": "Dance / EDM"},
+    {"id": "latin", "label": "Latin (Reggaeton, Salsa, Bachata)"},
+    {"id": "country", "label": "Country"},
+    {"id": "rnb_soul", "label": "R&B / Soul"},
+    {"id": "afrobeat_amapiano", "label": "Afrobeat / Amapiano"},
+    {"id": "house", "label": "House (Deep House, Tech House, Progressive House)"},
+    {"id": "techno", "label": "Techno"},
+    {"id": "trance", "label": "Trance"},
+    {"id": "dubstep", "label": "Dubstep"},
+    {"id": "drum_and_bass", "label": "Drum & Bass"},
+    {"id": "future_bass", "label": "Future Bass"},
+    {"id": "electro_house", "label": "Electro House"},
+    {"id": "hardstyle", "label": "Hardstyle"},
+    {"id": "lounge_chill", "label": "Lounge / Chill / Downtempo"},
+    {"id": "funk_disco", "label": "Funk / Disco"},
+    {"id": "motown", "label": "Motown"},
+    {"id": "jazz_swing", "label": "Jazz / Swing"},
+    {"id": "rock_alternative", "label": "Rock / Alternative"},
+    {"id": "indie_dance", "label": "Indie Dance"},
+    {"id": "tropical_house", "label": "Tropical House"},
+    {"id": "lofi_ambient", "label": "Lo-fi / Ambient"}
+  ]
+}

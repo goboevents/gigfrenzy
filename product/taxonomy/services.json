@@ -1,0 +1,749 @@
+{
+  "version": 2,
+  "currency": "USD",
+  "tierModel": {
+    "tiers": [
+      "low",
+      "standard",
+      "high"
+    ],
+    "selectionMode": "global",
+    "notes": "Pricing uses a tiered model (low/standard/high). Confirm whether tier is selected globally for the package (current assumption) or per-service."
+  },
+  "categories": [
+    "Audio Equipment",
+    "DJ Service",
+    "Karaoke",
+    "Lighting",
+    "Logistics & Planning",
+    "Musicians",
+    "Photo Booth",
+    "Specialty",
+    "Video/Projection"
+  ],
+  "services": [
+    {
+      "id": "2_hour_premium_photo_booth_service",
+      "label": "2 Hour Premium Photo Booth Service",
+      "description": "Up to 2 Hours Premium Photo Booth Service; Includes attendant, props, backdrop, custom border, digital photos & album",
+      "category": "Photo Booth",
+      "pricing": {
+        "low": 450.0,
+        "standard": 450.0,
+        "high": 549.0,
+        "currency": "USD",
+        "unit": "each"
+      },
+      "setupTimeMinutes": 30
+    },
+    {
+      "id": "3_hour_premium_photo_booth_service",
+      "label": "3 Hour Premium Photo Booth Service",
+      "description": "Up to 3 Hours Premium Photo Booth Service; Includes attendant, props, backdrop, custom border, digital photos & album",
+      "category": "Photo Booth",
+      "pricing": {
+        "low": 549.0,
+        "standard": 549.0,
+        "high": 695.0,
+        "currency": "USD",
+        "unit": "each"
+      },
+      "setupTimeMinutes": 30
+    },
+    {
+      "id": "360_video_booth_service_2_hours",
+      "label": "360 Video Booth Service - 2 Hours",
+      "description": "360 video booth with attendant, props, custom design, digital album",
+      "category": "Photo Booth",
+      "pricing": {
+        "low": 795.0,
+        "standard": 795.0,
+        "high": 795.0,
+        "currency": "USD",
+        "unit": "each"
+      },
+      "setupTimeMinutes": 60
+    },
+    {
+      "id": "360_video_booth_service_3_hours",
+      "label": "360 Video Booth Service - 3 Hours",
+      "description": "360 video booth with attendant, props, custom design, digital album",
+      "category": "Photo Booth",
+      "pricing": {
+        "low": 995.0,
+        "standard": 995.0,
+        "high": 995.0,
+        "currency": "USD",
+        "unit": "each"
+      },
+      "setupTimeMinutes": 60
+    },
+    {
+      "id": "360_video_booth_service_4_hours",
+      "label": "360 Video Booth Service - 4 Hours",
+      "description": "360 video booth with attendant, props, custom design, digital album",
+      "category": "Photo Booth",
+      "pricing": {
+        "low": 1095.0,
+        "standard": 1095.0,
+        "high": 1295.0,
+        "currency": "USD",
+        "unit": "each"
+      },
+      "setupTimeMinutes": 60
+    },
+    {
+      "id": "360_video_booth_service_5_hours",
+      "label": "360 Video Booth Service - 5 Hours",
+      "description": "360 video booth with attendant, props, custom design, digital album",
+      "category": "Photo Booth",
+      "pricing": {
+        "low": 1295.0,
+        "standard": 1295.0,
+        "high": 1495.0,
+        "currency": "USD",
+        "unit": "each"
+      },
+      "setupTimeMinutes": 60
+    },
+    {
+      "id": "360_video_booth_service_6_hours",
+      "label": "360 Video Booth Service - 6 Hours",
+      "description": "360 video booth with attendant, props, custom design, digital album",
+      "category": "Photo Booth",
+      "pricing": {
+        "low": 1495.0,
+        "standard": 1495.0,
+        "high": 1695.0,
+        "currency": "USD",
+        "unit": "each"
+      },
+      "setupTimeMinutes": 60
+    },
+    {
+      "id": "4_hour_premium_photo_booth_service",
+      "label": "4 Hour Premium Photo Booth Service",
+      "description": "Up to 4 Hours Premium Photo Booth Service; Includes attendant, props, backdrop, custom border, digital photos & album",
+      "category": "Photo Booth",
+      "pricing": {
+        "low": 795.0,
+        "standard": 795.0,
+        "high": 795.0,
+        "currency": "USD",
+        "unit": "each"
+      },
+      "setupTimeMinutes": 30
+    },
+    {
+      "id": "5_hour_premium_photo_booth_service",
+      "label": "5 Hour Premium Photo Booth Service",
+      "description": "Up to 5 Hours Premium Photo Booth Service; Includes attendant, props, backdrop, custom border, digital photos & album",
+      "category": "Photo Booth",
+      "pricing": {
+        "low": 895.0,
+        "standard": 895.0,
+        "high": 895.0,
+        "currency": "USD",
+        "unit": "each"
+      },
+      "setupTimeMinutes": 30
+    },
+    {
+      "id": "6_hour_premium_photo_booth_service",
+      "label": "6 Hour Premium Photo Booth Service",
+      "description": "Up to 6 Hours Premium Photo Booth Service; Includes attendant, props, backdrop, custom border, digital photos & album",
+      "category": "Photo Booth",
+      "pricing": {
+        "low": 995.0,
+        "standard": 995.0,
+        "high": 995.0,
+        "currency": "USD",
+        "unit": "each"
+      },
+      "setupTimeMinutes": 30
+    },
+    {
+      "id": "additional_cold_sparkler",
+      "label": "Additional Cold Sparkler",
+      "description": "Additional sparkler (single unit)",
+      "category": "Specialty",
+      "pricing": {
+        "low": 225.0,
+        "standard": 225.0,
+        "high": 225.0,
+        "currency": "USD",
+        "unit": "each"
+      },
+      "setupTimeMinutes": 10
+    },
+    {
+      "id": "additional_microphone_for_ceremony",
+      "label": "Additional Microphone for Ceremony",
+      "description": "Additional mic (lapel or handheld)",
+      "category": "Audio Equipment",
+      "pricing": {
+        "low": 75.0,
+        "standard": 100.0,
+        "high": 125.0,
+        "currency": "USD",
+        "unit": "each"
+      },
+      "setupTimeMinutes": 10
+    },
+    {
+      "id": "additional_speaker",
+      "label": "Additional Speaker",
+      "description": null,
+      "category": "Audio Equipment",
+      "pricing": {
+        "low": 275.0,
+        "standard": 325.0,
+        "high": 375.0,
+        "currency": "USD",
+        "unit": "each"
+      },
+      "setupTimeMinutes": 10
+    },
+    {
+      "id": "additional_tv_on_stand",
+      "label": "Additional TV on Stand",
+      "description": "50–65\" TV on stand with playback",
+      "category": "Video/Projection",
+      "pricing": {
+        "low": 250.0,
+        "standard": 275.0,
+        "high": 300.0,
+        "currency": "USD",
+        "unit": "each"
+      },
+      "setupTimeMinutes": 15
+    },
+    {
+      "id": "additional_wireless_speaker",
+      "label": "Additional Wireless Speaker",
+      "description": null,
+      "category": "Audio Equipment",
+      "pricing": {
+        "low": 300.0,
+        "standard": 325.0,
+        "high": 350.0,
+        "currency": "USD",
+        "unit": "each"
+      },
+      "setupTimeMinutes": 10
+    },
+    {
+      "id": "banquet_audio_system",
+      "label": "Banquet Audio System",
+      "description": "Professional audio system with music playback",
+      "category": "Audio Equipment",
+      "pricing": {
+        "low": 400.0,
+        "standard": 500.0,
+        "high": 750.0,
+        "currency": "USD",
+        "unit": "each"
+      },
+      "setupTimeMinutes": 60
+    },
+    {
+      "id": "bilingual_dj",
+      "label": "Bilingual DJ",
+      "description": null,
+      "category": "DJ Service",
+      "pricing": {
+        "low": 0.0,
+        "standard": 0.0,
+        "high": 0.0,
+        "currency": "USD",
+        "unit": "each"
+      },
+      "setupTimeMinutes": 0
+    },
+    {
+      "id": "ceremony_audio_system",
+      "label": "Ceremony Audio System",
+      "description": "Speaker, mixer, mic, playback",
+      "category": "Audio Equipment",
+      "pricing": {
+        "low": 250.0,
+        "standard": 300.0,
+        "high": 350.0,
+        "currency": "USD",
+        "unit": "each"
+      },
+      "setupTimeMinutes": 30
+    },
+    {
+      "id": "cocktail_social_hour_audio",
+      "label": "Cocktail/Social Hour Audio",
+      "description": "Separate location audio setup",
+      "category": "Audio Equipment",
+      "pricing": {
+        "low": 225.0,
+        "standard": 275.0,
+        "high": 350.0,
+        "currency": "USD",
+        "unit": "each"
+      },
+      "setupTimeMinutes": 20
+    },
+    {
+      "id": "cold_sparklers_pair",
+      "label": "Cold Sparklers (Pair)",
+      "description": "2 sparkler units",
+      "category": "Specialty",
+      "pricing": {
+        "low": 495.0,
+        "standard": 495.0,
+        "high": 495.0,
+        "currency": "USD",
+        "unit": "each"
+      },
+      "setupTimeMinutes": 20
+    },
+    {
+      "id": "dancing_on_the_clouds",
+      "label": "Dancing on the Clouds",
+      "description": "Dry ice fog effect",
+      "category": "Specialty",
+      "pricing": {
+        "low": 495.0,
+        "standard": 495.0,
+        "high": 495.0,
+        "currency": "USD",
+        "unit": "each"
+      },
+      "setupTimeMinutes": 10
+    },
+    {
+      "id": "dedicated_event_manager",
+      "label": "Dedicated Event Manager",
+      "description": "Event coordination service",
+      "category": "Logistics & Planning",
+      "pricing": {
+        "low": 499.0,
+        "standard": 499.0,
+        "high": 499.0,
+        "currency": "USD",
+        "unit": "each"
+      },
+      "setupTimeMinutes": null
+    },
+    {
+      "id": "online_planning_portal_access",
+      "label": "Online Planning Portal Access",
+      "description": "Online planning system",
+      "category": "Logistics & Planning",
+      "pricing": {
+        "low": 199.0,
+        "standard": 199.0,
+        "high": 199.0,
+        "currency": "USD",
+        "unit": "each"
+      },
+      "setupTimeMinutes": null
+    },
+    {
+      "id": "unlimited_personal_consultations",
+      "label": "Unlimited Personal Consultations",
+      "description": null,
+      "category": "Logistics & Planning",
+      "pricing": {
+        "low": 299.0,
+        "standard": 299.0,
+        "high": 299.0,
+        "currency": "USD",
+        "unit": "each"
+      },
+      "setupTimeMinutes": null
+    },
+    {
+      "id": "inflatable_pop_up_enclosure",
+      "label": "Inflatable Pop Up Enclosure",
+      "description": null,
+      "category": "Photo Booth",
+      "pricing": {
+        "low": 200.0,
+        "standard": 225.0,
+        "high": 250.0,
+        "currency": "USD",
+        "unit": "each"
+      },
+      "setupTimeMinutes": 15
+    },
+    {
+      "id": "intelligent_dance_floor_lighting",
+      "label": "Intelligent Dance Floor Lighting",
+      "description": "Dynamic lighting system",
+      "category": "Lighting",
+      "pricing": {
+        "low": 225.0,
+        "standard": 325.0,
+        "high": 395.0,
+        "currency": "USD",
+        "unit": "each"
+      },
+      "setupTimeMinutes": 30
+    },
+    {
+      "id": "karaoke_host",
+      "label": "Karaoke Host",
+      "description": null,
+      "category": "Karaoke",
+      "pricing": {
+        "low": 100.0,
+        "standard": 125.0,
+        "high": 150.0,
+        "currency": "USD",
+        "unit": "hour"
+      },
+      "setupTimeMinutes": 0
+    },
+    {
+      "id": "karaoke_service_add_to_dj",
+      "label": "Karaoke Service (Add to DJ)",
+      "description": "Karaoke integrated into DJ set",
+      "category": "Karaoke",
+      "pricing": {
+        "low": 425.0,
+        "standard": 450.0,
+        "high": 495.0,
+        "currency": "USD",
+        "unit": "each"
+      },
+      "setupTimeMinutes": 15
+    },
+    {
+      "id": "karaoke_system_basic",
+      "label": "Karaoke System - Basic",
+      "description": "Standalone karaoke system (small events)",
+      "category": "Karaoke",
+      "pricing": {
+        "low": 525.0,
+        "standard": 695.0,
+        "high": 795.0,
+        "currency": "USD",
+        "unit": "each"
+      },
+      "setupTimeMinutes": 75
+    },
+    {
+      "id": "karaoke_system_premium",
+      "label": "Karaoke System - Premium",
+      "description": "Standalone karaoke system (large events)",
+      "category": "Karaoke",
+      "pricing": {
+        "low": 625.0,
+        "standard": 750.0,
+        "high": 895.0,
+        "currency": "USD",
+        "unit": "each"
+      },
+      "setupTimeMinutes": 75
+    },
+    {
+      "id": "monogram_projection",
+      "label": "Monogram Projection",
+      "description": "Custom projection design",
+      "category": "Specialty",
+      "pricing": {
+        "low": 295.0,
+        "standard": 325.0,
+        "high": 350.0,
+        "currency": "USD",
+        "unit": "each"
+      },
+      "setupTimeMinutes": 20
+    },
+    {
+      "id": "move_equipment_same_venue",
+      "label": "Move Equipment (Same Venue)",
+      "description": "Move audio/equipment onsite",
+      "category": "Audio Equipment",
+      "pricing": {
+        "low": 100.0,
+        "standard": 100.0,
+        "high": 150.0,
+        "currency": "USD",
+        "unit": "each"
+      },
+      "setupTimeMinutes": 0
+    },
+    {
+      "id": "music_ensemble",
+      "label": "Music Ensemble",
+      "description": null,
+      "category": "Musicians",
+      "pricing": {
+        "low": null,
+        "standard": null,
+        "high": null,
+        "currency": "USD",
+        "unit": null
+      },
+      "setupTimeMinutes": null,
+      "status": "disabled",
+      "disabledReason": "Unpriced; excluded from v1 per product decision."
+    },
+    {
+      "id": "on_demand_printing_photo_booth",
+      "label": "On Demand Printing (Photo Booth)",
+      "description": null,
+      "category": "Photo Booth",
+      "pricing": {
+        "low": 100.0,
+        "standard": 150.0,
+        "high": 150.0,
+        "currency": "USD",
+        "unit": "each"
+      },
+      "setupTimeMinutes": 15
+    },
+    {
+      "id": "pro_audio_system_proms",
+      "label": "Pro Audio System (Proms)",
+      "description": "Large-scale audio system",
+      "category": "Audio Equipment",
+      "pricing": {
+        "low": 400.0,
+        "standard": 600.0,
+        "high": 750.0,
+        "currency": "USD",
+        "unit": "each"
+      },
+      "setupTimeMinutes": 45
+    },
+    {
+      "id": "professional_dj_mc_service",
+      "label": "Professional DJ/MC Service",
+      "description": "DJ + MC services",
+      "category": "DJ Service",
+      "pricing": {
+        "low": 100.0,
+        "standard": 125.0,
+        "high": 225.0,
+        "currency": "USD",
+        "unit": "hour"
+      },
+      "setupTimeMinutes": 0
+    },
+    {
+      "id": "professional_party_audio_system",
+      "label": "Professional Party Audio System",
+      "description": "Audio system for parties",
+      "category": "Audio Equipment",
+      "pricing": {
+        "low": 300.0,
+        "standard": 350.0,
+        "high": 400.0,
+        "currency": "USD",
+        "unit": "each"
+      },
+      "setupTimeMinutes": 45
+    },
+    {
+      "id": "projector_with_pop_up_screen",
+      "label": "Projector with Pop-Up Screen",
+      "description": "Projector + screen setup",
+      "category": "Video/Projection",
+      "pricing": {
+        "low": 225.0,
+        "standard": 325.0,
+        "high": 425.0,
+        "currency": "USD",
+        "unit": "each"
+      },
+      "setupTimeMinutes": 20
+    },
+    {
+      "id": "small_band_pa_system",
+      "label": "Small Band PA System",
+      "description": "Audio setup for band",
+      "category": "Audio Equipment",
+      "pricing": {
+        "low": 525.0,
+        "standard": 695.0,
+        "high": 895.0,
+        "currency": "USD",
+        "unit": "each"
+      },
+      "setupTimeMinutes": 90
+    },
+    {
+      "id": "solo_musician",
+      "label": "Solo Musician",
+      "description": "Guitarist, harpist, etc.",
+      "category": "Musicians",
+      "pricing": {
+        "low": 150.0,
+        "standard": 225.0,
+        "high": 275.0,
+        "currency": "USD",
+        "unit": "hour"
+      },
+      "setupTimeMinutes": 30
+    },
+    {
+      "id": "solo_musician_pa_system",
+      "label": "Solo Musician PA System",
+      "description": null,
+      "category": "Audio Equipment",
+      "pricing": {
+        "low": 250.0,
+        "standard": 275.0,
+        "high": 325.0,
+        "currency": "USD",
+        "unit": "each"
+      },
+      "setupTimeMinutes": 30
+    },
+    {
+      "id": "tv_on_stand",
+      "label": "TV on Stand",
+      "description": "50–65\" TV with playback",
+      "category": "Video/Projection",
+      "pricing": {
+        "low": 250.0,
+        "standard": 350.0,
+        "high": 450.0,
+        "currency": "USD",
+        "unit": "each"
+      },
+      "setupTimeMinutes": 15
+    },
+    {
+      "id": "upgraded_audio_package",
+      "label": "Upgraded Audio Package",
+      "description": "Enhanced audio w/ subwoofer",
+      "category": "Audio Equipment",
+      "pricing": {
+        "low": 200.0,
+        "standard": 395.0,
+        "high": 495.0,
+        "currency": "USD",
+        "unit": "each"
+      },
+      "setupTimeMinutes": 30
+    },
+    {
+      "id": "upgraded_dance_floor_lighting",
+      "label": "Upgraded Dance Floor Lighting",
+      "description": "Enhanced lighting package",
+      "category": "Lighting",
+      "pricing": {
+        "low": 250.0,
+        "standard": 375.0,
+        "high": 450.0,
+        "currency": "USD",
+        "unit": "each"
+      },
+      "setupTimeMinutes": 30
+    },
+    {
+      "id": "venue_uplighting",
+      "label": "Venue Uplighting",
+      "description": "Ambient room lighting",
+      "category": "Lighting",
+      "pricing": {
+        "low": 275.0,
+        "standard": 325.0,
+        "high": 375.0,
+        "currency": "USD",
+        "unit": "each"
+      },
+      "setupTimeMinutes": 20
+    },
+    {
+      "id": "wedding_reception_audio_system",
+      "label": "Wedding Reception Audio System",
+      "description": "Full reception audio setup",
+      "category": "Audio Equipment",
+      "pricing": {
+        "low": 325.0,
+        "standard": 350.0,
+        "high": 395.0,
+        "currency": "USD",
+        "unit": "each"
+      },
+      "setupTimeMinutes": 30
+    }
+  ],
+  "dataQuality": {
+    "nullPricingServices": [
+      "music_ensemble"
+    ],
+    "zeroPricedServices": [
+      "bilingual_dj"
+    ]
+  },
+  "selectionRules": {
+    "tierSelection": {
+      "mode": "global",
+      "tiers": [
+        "low",
+        "standard",
+        "high"
+      ]
+    },
+    "exclusiveGroups": [
+      {
+        "id": "photo_booth_premium_duration",
+        "label": "Premium Photo Booth duration",
+        "serviceIds": [
+          "2_hour_premium_photo_booth_service",
+          "3_hour_premium_photo_booth_service",
+          "4_hour_premium_photo_booth_service",
+          "5_hour_premium_photo_booth_service",
+          "6_hour_premium_photo_booth_service"
+        ],
+        "selection": "one_per_booth_instance"
+      },
+      {
+        "id": "photo_booth_360_duration",
+        "label": "360 Video Booth duration",
+        "serviceIds": [
+          "360_video_booth_service_2_hours",
+          "360_video_booth_service_3_hours",
+          "360_video_booth_service_4_hours",
+          "360_video_booth_service_5_hours",
+          "360_video_booth_service_6_hours"
+        ],
+        "selection": "one_per_booth_instance"
+      }
+    ],
+    "timingModel": {
+      "eventWindow": {
+        "required": true,
+        "fields": [
+          "eventStart",
+          "eventEnd"
+        ]
+      },
+      "lineItemWindow": {
+        "allowedForCategories": [
+          "Photo Booth",
+          "Karaoke",
+          "Video/Projection",
+          "Specialty",
+          "Lighting",
+          "Audio Equipment",
+          "Logistics & Planning",
+          "Musicians"
+        ],
+        "notes": "Add-on services can have their own start/end times or use full event duration."
+      },
+      "primaryServiceHourRule": {
+        "default": "use_event_duration",
+        "notes": "Hourly unit items default to event duration when they represent the primary DJ service."
+      }
+    },
+    "availability": {
+      "vendorConfirms": true,
+      "estimateOnly": true
+    },
+    "disabledServiceIds": [
+      "music_ensemble"
+    ]
+  }
+}
